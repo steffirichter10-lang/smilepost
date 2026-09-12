@@ -1,19 +1,31 @@
+import { useEvent } from 'expo';
 import { router } from 'expo-router';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { Button, useThemeColor } from 'heroui-native';
 import { ArrowRight, Sparkles } from 'lucide-react-native';
-import { Text, useWindowDimensions, View } from 'react-native';
-import { useVideoPlayer, VideoView } from 'expo-video';
+import { ActivityIndicator, Image, Text, useWindowDimensions, View } from 'react-native';
 
 const HERO_VIDEO_URL =
-  'https://res.cloudinary.com/hnb8c0nk/video/upload/v1789256936/make-someone-smile-spot.mp4';
+  'https://res.cloudinary.com/hnb8c0nk/video/upload/ac_none,c_limit,w_1280,q_auto:eco,vc_h264/v1789256936/make-someone-smile-spot.mp4';
+const HERO_POSTER_URL =
+  'https://res.cloudinary.com/hnb8c0nk/video/upload/so_1,c_limit,w_1280,q_auto:eco/v1789256936/make-someone-smile-spot.jpg';
 
 export default function HomeScreen() {
-  const [foreground, accentForeground] = useThemeColor(['foreground', 'accent-foreground']);
+  const [foreground, accentForeground, accent] = useThemeColor([
+    'foreground',
+    'accent-foreground',
+    'accent',
+  ]);
   const player = useVideoPlayer(HERO_VIDEO_URL, (videoPlayer) => {
     videoPlayer.loop = true;
     videoPlayer.muted = true;
     videoPlayer.play();
   });
+  const { status: videoStatus } = useEvent(player, 'statusChange', {
+    status: player.status,
+  });
+  const isVideoReady = videoStatus === 'readyToPlay';
+  const hasVideoError = videoStatus === 'error';
   const { height, width } = useWindowDimensions();
   const isCompact = height < 760;
   const contentWidth = Math.min(width - 40, 768);
@@ -58,12 +70,44 @@ export default function HomeScreen() {
             className="bg-lilac/70 relative w-full overflow-hidden rounded-[28px]"
             style={{ height: videoHeight }}
           >
+            <Image
+              accessibilityLabel="A joyful moment from the smile film"
+              source={{ uri: HERO_POSTER_URL }}
+              resizeMode="cover"
+              className="absolute inset-0"
+              style={{ width: '100%', height: videoHeight }}
+            />
             <VideoView
               player={player}
               nativeControls={false}
               contentFit="cover"
-              style={{ width: '100%', height: videoHeight }}
+              style={{ width: '100%', height: videoHeight, opacity: isVideoReady ? 1 : 0 }}
             />
+
+            {!isVideoReady && !hasVideoError ? (
+              <View
+                accessibilityLiveRegion="polite"
+                className="absolute inset-x-0 bottom-3 items-center"
+              >
+                <View className="bg-card/90 flex-row items-center gap-2 rounded-full px-3 py-2">
+                  <ActivityIndicator color={accent} size="small" />
+                  <Text className="text-foreground text-xs font-semibold">Loading the film…</Text>
+                </View>
+              </View>
+            ) : null}
+
+            {hasVideoError ? (
+              <View
+                accessibilityLiveRegion="polite"
+                className="bg-foreground/35 absolute inset-0 items-center justify-center px-6"
+              >
+                <View className="bg-card/95 rounded-3xl px-5 py-3">
+                  <Text className="text-foreground text-center text-sm font-semibold">
+                    The film is unavailable, but your smile can still travel.
+                  </Text>
+                </View>
+              </View>
+            ) : null}
           </View>
         </View>
 
