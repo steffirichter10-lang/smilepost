@@ -1,10 +1,19 @@
 import { router } from 'expo-router';
 import { Button, useThemeColor } from 'heroui-native';
-import { ArrowRight, Play, Sparkles } from 'lucide-react-native';
+import { ArrowRight, Sparkles } from 'lucide-react-native';
 import { Text, useWindowDimensions, View } from 'react-native';
+import { useVideoPlayer, VideoView } from 'expo-video';
+
+const HERO_VIDEO_URL =
+  'https://res.cloudinary.com/hnb8c0nk/video/upload/v1789256936/make-someone-smile-spot.mp4';
 
 export default function HomeScreen() {
   const [foreground, accentForeground] = useThemeColor(['foreground', 'accent-foreground']);
+  const player = useVideoPlayer(HERO_VIDEO_URL, (videoPlayer) => {
+    videoPlayer.loop = true;
+    videoPlayer.muted = true;
+    videoPlayer.play();
+  });
   const { height, width } = useWindowDimensions();
   const isCompact = height < 760;
   const contentWidth = Math.min(width - 40, 768);
@@ -46,25 +55,15 @@ export default function HomeScreen() {
 
         <View className="bg-card/90 overflow-hidden rounded-[36px] border border-white/90 p-3 shadow-sm">
           <View
-            className="bg-lilac/70 relative w-full items-center justify-center overflow-hidden rounded-[28px]"
+            className="bg-lilac/70 relative w-full overflow-hidden rounded-[28px]"
             style={{ height: videoHeight }}
           >
-            <View className="bg-blush/70 absolute -top-12 -right-10 size-44 rounded-full" />
-            <View className="bg-sun/60 absolute -bottom-16 -left-8 size-48 rounded-full" />
-            <View
-              className={`${isCompact ? 'size-16' : 'size-20'} bg-card/90 items-center justify-center rounded-full shadow-sm`}
-            >
-              <Play color={foreground} fill={foreground} size={isCompact ? 24 : 30} />
-            </View>
-            <View className="absolute right-5 bottom-4 left-5 flex-row items-end justify-between">
-              <View>
-                <Text className="text-foreground text-base font-bold">Your video</Text>
-                <Text className="text-muted mt-1 text-xs">Video placeholder</Text>
-              </View>
-              <View className="rounded-full bg-white/70 px-3 py-1.5">
-                <Text className="text-foreground text-xs font-semibold">00:00</Text>
-              </View>
-            </View>
+            <VideoView
+              player={player}
+              nativeControls={false}
+              contentFit="cover"
+              style={{ width: '100%', height: videoHeight }}
+            />
           </View>
         </View>
 
