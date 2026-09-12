@@ -36,31 +36,30 @@ type Reason = {
 
 type ActiveChainLink = { shareToken: string; trackerToken: string };
 
-const SMILE_FOOTER =
-  'Wenn dich das zum Lächeln gebracht hat, schenk bitte auch jemandem einen Smile und lass ihn weiterwandern:';
+const SMILE_FOOTER = 'If this made you smile, please send someone a Smile too and keep it moving:';
 
 const REASONS: Reason[] = [
   {
     id: 'thinking',
-    label: 'Ich denke an dich',
+    label: 'Thinking of you',
     className: 'bg-lilac',
     icon: Sparkles,
   },
   {
     id: 'thanks',
-    label: 'Danke sagen',
+    label: 'Say thank you',
     className: 'bg-blush',
     icon: MessageCircleHeart,
   },
   {
     id: 'impact',
-    label: 'Du bewegst mich',
+    label: 'You inspire me',
     className: 'bg-sand',
     icon: Heart,
   },
   {
     id: 'proud',
-    label: 'Ich bin stolz auf dich',
+    label: "I'm proud of you",
     className: 'bg-sun',
     icon: Star,
   },
@@ -93,9 +92,7 @@ export default function SendScreen() {
   const goForward = () => {
     setFeedback('');
     if (step === 2) {
-      setMessage(
-        `Hey ${name.trim()},\n\n${details.trim()}\n\nIch wollte dir das einfach mal sagen.`,
-      );
+      setMessage(`Hey ${name.trim()},\n\n${details.trim()}\n\nI just wanted you to know.`);
       setStep(3);
       return;
     }
@@ -112,9 +109,7 @@ export default function SendScreen() {
       return `${message.trim()}\n\n${SMILE_FOOTER}\n${smileUrl}`;
     } catch (error) {
       setFeedback(
-        error instanceof Error
-          ? error.message
-          : 'Der persönliche Smile-Link konnte nicht erstellt werden.',
+        error instanceof Error ? error.message : 'We couldn’t create your personal Smile link.',
       );
       return null;
     } finally {
@@ -131,14 +126,14 @@ export default function SendScreen() {
   const shareMessage = async () => {
     const sharedMessage = await prepareSharedMessage();
     if (!sharedMessage) return;
-    await Share.share({ message: sharedMessage, title: `Eine Nachricht für ${name.trim()}` });
+    await Share.share({ message: sharedMessage, title: `A message for ${name.trim()}` });
   };
 
   const copyMessage = async () => {
     const sharedMessage = await prepareSharedMessage();
     if (!sharedMessage) return;
     await Clipboard.setStringAsync(sharedMessage);
-    setFeedback('Nachricht mit persönlichem Smile-Link kopiert.');
+    setFeedback('Message copied with your personal Smile link.');
   };
 
   return (
@@ -167,18 +162,18 @@ export default function SendScreen() {
                 <Text
                   className={`text-foreground web:text-5xl leading-tight font-bold ${isCompact ? 'text-[28px]' : 'text-3xl'}`}
                 >
-                  Für wen?
+                  Who is it for?
                 </Text>
                 <Text
                   className={`text-muted text-base ${isCompact ? 'mt-1 leading-5' : 'mt-2 leading-6'}`}
                 >
-                  Wem möchtest du heute ein Lächeln schenken?
+                  Who would you like to make smile today?
                 </Text>
                 <TextField className={isCompact ? 'mt-3' : 'web:mt-7 mt-5'}>
                   <Input
                     value={name}
                     onChangeText={setName}
-                    placeholder="Name, z. B. Mia"
+                    placeholder="Name, e.g. Mia"
                     autoCapitalize="words"
                     returnKeyType="done"
                     className={`bg-background rounded-full px-5 text-base ${isCompact ? 'h-12' : 'h-14'}`}
@@ -187,7 +182,7 @@ export default function SendScreen() {
                 <Text
                   className={`text-foreground text-sm font-semibold ${isCompact ? 'mt-3 mb-2' : 'web:mt-7 mt-5 mb-3'}`}
                 >
-                  Was ist dein Anlass?
+                  What’s the occasion?
                 </Text>
                 <View className={`flex-row flex-wrap ${isCompact ? 'gap-2' : 'gap-3'}`}>
                   {REASONS.map((reason) => {
@@ -232,18 +227,18 @@ export default function SendScreen() {
                 <Text
                   className={`text-foreground web:text-5xl leading-tight font-bold ${isDetailsCompact ? 'mt-2 text-[27px]' : 'mt-3 text-3xl'}`}
                 >
-                  Was soll {name.trim()} wissen?
+                  What would you like {name.trim()} to know?
                 </Text>
                 <Text
                   className={`text-muted text-base ${isDetailsCompact ? 'mt-0.5 leading-5' : 'mt-1 leading-5'}`}
                 >
-                  Schreib einfach frei heraus. Stichpunkte reichen völlig.
+                  Write from the heart. A few notes are more than enough.
                 </Text>
                 <TextField className={isDetailsCompact ? 'mt-2.5' : 'web:mt-7 mt-5'}>
                   <TextArea
                     value={details}
                     onChangeText={setDetails}
-                    placeholder="Zum Beispiel: Danke, dass du immer zuhörst …"
+                    placeholder="For example: Thank you for always listening …"
                     maxLength={900}
                     className={`bg-background web:min-h-44 rounded-[24px] px-5 text-base leading-6 ${isDetailsCompact ? 'min-h-24 py-3' : 'min-h-36 py-4'}`}
                   />
@@ -261,12 +256,12 @@ export default function SendScreen() {
                 <Text
                   className={`text-foreground web:text-5xl leading-tight font-bold ${isResultCompact ? 'text-[27px]' : 'text-3xl'}`}
                 >
-                  Bereit für {name.trim()}.
+                  Ready for {name.trim()}.
                 </Text>
                 <Text
                   className={`text-muted text-base ${isResultCompact ? 'mt-0.5 text-sm leading-5' : 'mt-2 leading-6'}`}
                 >
-                  Passe die Nachricht an, bis sie sich wirklich nach dir anhört.
+                  Edit the message until it truly sounds like you.
                 </Text>
                 <TextField className={isResultCompact ? 'mt-2.5' : 'web:mt-7 mt-5'}>
                   <TextArea
@@ -298,7 +293,7 @@ export default function SendScreen() {
                     onPress={goForward}
                     className={`${useCompactLayout ? 'h-12' : 'h-14'} flex-1 rounded-full`}
                   >
-                    <Button.Label className="font-semibold">Weiter</Button.Label>
+                    <Button.Label className="font-semibold">Continue</Button.Label>
                     <ArrowRight size={20} color={accentForeground} />
                   </Button>
                 </View>
@@ -310,7 +305,7 @@ export default function SendScreen() {
                 className={`${isResultCompact ? 'mt-1.5 h-9' : 'mt-7'} self-start rounded-full`}
               >
                 <ArrowLeft size={isResultCompact ? 16 : 18} color={foreground} />
-                <Button.Label>Text ändern</Button.Label>
+                <Button.Label>Edit text</Button.Label>
               </Button>
             )}
 
@@ -327,7 +322,7 @@ export default function SendScreen() {
                   ) : (
                     <MessageCircleHeart size={20} color={accentForeground} />
                   )}
-                  <Button.Label className="font-semibold">Über WhatsApp senden</Button.Label>
+                  <Button.Label className="font-semibold">Send via WhatsApp</Button.Label>
                 </Button>
                 <View className={isResultCompact ? 'flex-row gap-2' : 'flex-row gap-3'}>
                   <Button
@@ -337,7 +332,7 @@ export default function SendScreen() {
                     className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
                   >
                     <Share2 size={isResultCompact ? 17 : 19} color={foreground} />
-                    <Button.Label>Teilen</Button.Label>
+                    <Button.Label>Share</Button.Label>
                   </Button>
                   <Button
                     variant="secondary"
@@ -346,7 +341,7 @@ export default function SendScreen() {
                     className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
                   >
                     <Copy size={isResultCompact ? 17 : 19} color={foreground} />
-                    <Button.Label>Kopieren</Button.Label>
+                    <Button.Label>Copy</Button.Label>
                   </Button>
                 </View>
                 <View
@@ -356,8 +351,8 @@ export default function SendScreen() {
                   <Text
                     className={`text-foreground ml-2.5 flex-1 ${isResultCompact ? 'text-xs leading-4' : 'text-sm leading-5'}`}
                   >
-                    Beim Senden erhält deine Nachricht einen persönlichen Link. So siehst du auf der
-                    Impact Map, wie dein Smile weitergegeben wird.
+                    When you send it, your message gets a personal link. This lets you see how your
+                    Smile is passed on through the Impact Map.
                   </Text>
                 </View>
                 {feedback ? <Text className="text-muted text-sm leading-5">{feedback}</Text> : null}
@@ -366,7 +361,7 @@ export default function SendScreen() {
           </View>
           {!useCompactLayout ? (
             <Text className="text-muted web:mt-5 mt-3 text-center text-xs leading-4">
-              Kleine Worte. Große Wirkung.
+              Small words. Big impact.
             </Text>
           ) : null}
         </View>
@@ -386,7 +381,7 @@ function PastelBackdrop() {
 }
 
 function StepHeader({ step, compact }: { step: number; compact: boolean }) {
-  const titles = ['Für wen?', 'Was möchtest du sagen?', 'Deine Nachricht'];
+  const titles = ['Who is it for?', 'What would you like to say?', 'Your message'];
   return (
     <View
       className={`border-border/70 bg-card/80 flex-row items-center rounded-full border ${compact ? 'p-1' : 'p-2'}`}

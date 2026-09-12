@@ -11,19 +11,24 @@ import {
 
 const ITEMS = [
   {
-    title: 'KI-Status',
-    description: 'Noch nicht verbunden',
+    title: 'AI status',
+    description: 'Not connected yet',
     icon: Sparkles,
     className: 'bg-lilac',
   },
   {
-    title: 'Datenschutz',
-    description: 'So gehen wir mit deinen Texten um',
+    title: 'Privacy',
+    description: 'How we handle your messages',
     icon: Lock,
     className: 'bg-blush',
   },
-  { title: 'Über die App', description: 'To make someone smile', icon: Heart, className: 'bg-sun' },
-  { title: 'Hilfe', description: 'Antworten und Kontakt', icon: CircleHelp, className: 'bg-sand' },
+  {
+    title: 'About the app',
+    description: 'To make someone smile',
+    icon: Heart,
+    className: 'bg-sun',
+  },
+  { title: 'Help', description: 'Answers and contact', icon: CircleHelp, className: 'bg-sand' },
 ];
 
 export default function SettingsScreen() {
@@ -52,15 +57,13 @@ export default function SettingsScreen() {
       const status = await enableSmileNotifications();
       setSmilesEnabled(status === 'enabled');
       if (status === 'disabled') {
-        setSmilesMessage(
-          'Benachrichtigungen sind nicht erlaubt. Du kannst sie in den Geräteeinstellungen freigeben.',
-        );
+        setSmilesMessage('Notifications are disabled. You can allow them in your device settings.');
       } else if (status === 'unsupported') {
-        setSmilesMessage('Tägliche Smiles sind in der installierten App verfügbar.');
+        setSmilesMessage('Daily Smiles are available in the installed app.');
       }
     } catch {
       setSmilesEnabled(false);
-      setSmilesMessage('Der tägliche Smile konnte gerade nicht eingerichtet werden.');
+      setSmilesMessage('We couldn’t set up your daily Smile right now.');
     } finally {
       setSmilesLoading(false);
     }
@@ -73,10 +76,10 @@ export default function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View className="web:py-10 mx-auto w-full max-w-2xl py-5">
-          <Text className="text-muted text-xs font-semibold tracking-[2.5px]">DEINE APP</Text>
+          <Text className="text-muted text-xs font-semibold tracking-[2.5px]">YOUR APP</Text>
           <Text className="text-foreground mt-2 text-4xl font-bold">Settings</Text>
           <Text className="text-muted mt-3 text-base leading-6">
-            Alles Wichtige für deine Smile-Nachrichten an einem Ort.
+            Everything you need for your Smile messages, all in one place.
           </Text>
 
           <View className="mt-8 gap-3">
@@ -86,16 +89,16 @@ export default function SettingsScreen() {
                   <Bell color={foreground} size={20} />
                 </View>
                 <View className="ml-4 flex-1 pr-3">
-                  <Text className="text-foreground text-base font-semibold">Täglicher Smile</Text>
+                  <Text className="text-foreground text-base font-semibold">Daily Smile</Text>
                   <Text className="text-muted mt-1 text-sm leading-5">
-                    Einmal täglich zu einer zufälligen Zeit
+                    Once a day at a random time
                   </Text>
                 </View>
                 {smilesLoading ? (
                   <ActivityIndicator color={muted} />
                 ) : (
                   <Switch
-                    accessibilityLabel="Täglichen Smile erhalten"
+                    accessibilityLabel="Receive a daily Smile"
                     isDisabled={Platform.OS === 'web'}
                     isSelected={smilesEnabled}
                     onSelectedChange={(isSelected) => {
@@ -132,9 +135,9 @@ export default function SettingsScreen() {
           </View>
 
           <View className="bg-lilac/60 mt-8 rounded-[30px] p-6">
-            <Text className="text-foreground text-xl font-bold">Kleine Worte. Große Wirkung.</Text>
+            <Text className="text-foreground text-xl font-bold">Small words. Big impact.</Text>
             <Text className="text-muted mt-2 text-sm leading-6">
-              Version 1.0 · Mit Sorgfalt für besondere Menschen gestaltet.
+              Version 1.0 · Thoughtfully designed for special people.
             </Text>
           </View>
         </View>

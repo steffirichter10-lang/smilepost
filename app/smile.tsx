@@ -21,7 +21,7 @@ export default function ReceivedSmileScreen() {
     let active = true;
     const load = async () => {
       if (!token) {
-        setErrorMessage('In diesem Link fehlt der Smile-Code.');
+        setErrorMessage('This Smile link is missing its code.');
         setState('error');
         return;
       }
@@ -33,7 +33,7 @@ export default function ReceivedSmileScreen() {
       } catch (error) {
         if (!active) return;
         setErrorMessage(
-          error instanceof Error ? error.message : 'Der Smile-Link konnte nicht geöffnet werden.',
+          error instanceof Error ? error.message : 'We couldn’t open this Smile link.',
         );
         setState('error');
       }
@@ -61,9 +61,7 @@ export default function ReceivedSmileScreen() {
       await confirmSmile(token, coordinates);
       setState('confirmed');
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Der Smile konnte nicht bestätigt werden.',
-      );
+      setErrorMessage(error instanceof Error ? error.message : 'We couldn’t confirm this Smile.');
       setState('ready');
     }
   };
@@ -84,7 +82,7 @@ export default function ReceivedSmileScreen() {
           {state === 'error' ? (
             <>
               <Text className="text-foreground mt-6 text-center text-3xl font-bold">
-                Smile nicht gefunden
+                Smile not found
               </Text>
               <Text className="text-muted mt-3 text-center text-base leading-6">
                 {errorMessage}
@@ -94,7 +92,7 @@ export default function ReceivedSmileScreen() {
                 onPress={() => router.replace('/')}
                 className="mt-7 h-13 rounded-full px-6"
               >
-                <Button.Label>Zur Startseite</Button.Label>
+                <Button.Label>Back to home</Button.Label>
               </Button>
             </>
           ) : state === 'confirmed' ? (
@@ -103,16 +101,16 @@ export default function ReceivedSmileScreen() {
                 SMILE #{generation}
               </Text>
               <Text className="text-foreground mt-2 text-center text-4xl leading-tight font-bold">
-                Jetzt beginnt dein Impact.
+                This is where your impact begins.
               </Text>
               <Text className="text-muted mt-3 text-center text-base leading-6">
-                Dein Lächeln zählt zur Kette. Schick jetzt jemandem eine persönliche Nachricht und
-                lass sie weiterwachsen.
+                Your Smile is now part of the chain. Send someone a personal message and help it
+                grow.
               </Text>
               <View className="bg-sun/55 mt-6 w-full flex-row items-center rounded-[22px] p-4">
                 <Sparkles color={foreground} size={22} />
                 <Text className="text-foreground ml-3 flex-1 text-sm leading-5 font-medium">
-                  Aus einem Smile können viele werden.
+                  One Smile can inspire many more.
                 </Text>
               </View>
               <Button
@@ -122,21 +120,21 @@ export default function ReceivedSmileScreen() {
                 }
                 className="mt-6 h-14 w-full rounded-full"
               >
-                <Button.Label className="font-semibold">Smile weitergeben</Button.Label>
+                <Button.Label className="font-semibold">Pass on a Smile</Button.Label>
                 <ArrowRight color={accentForeground} size={20} />
               </Button>
             </>
           ) : (
             <>
               <Text className="text-muted mt-6 text-xs font-semibold tracking-[2px]">
-                EIN SMILE FÜR DICH
+                A SMILE FOR YOU
               </Text>
               <Text className="text-foreground mt-2 text-center text-4xl leading-tight font-bold">
-                Ist dein Smile angekommen?
+                Did your Smile arrive?
               </Text>
               <Text className="text-muted mt-3 text-center text-base leading-6">
-                Bestätige ihn, damit sein Weg auf der Impact Map sichtbar wird. Namen und Nachricht
-                werden nie gespeichert.
+                Confirm it to make its journey visible on the Impact Map. Names and messages are
+                never stored.
               </Text>
               <Button
                 variant="primary"
@@ -145,11 +143,11 @@ export default function ReceivedSmileScreen() {
                 className="mt-7 h-14 w-full rounded-full"
               >
                 <MapPin color={accentForeground} size={20} />
-                <Button.Label className="font-semibold">Anonym auf der Map zeigen</Button.Label>
+                <Button.Label className="font-semibold">Show anonymously on the map</Button.Label>
               </Button>
               <Text className="text-muted mt-3 text-center text-xs leading-4">
-                Nur ein grober Bereich wird gespeichert, nie dein genauer Standort. Die Freigabe ist
-                freiwillig.
+                Only an approximate area is stored, never your exact location. Sharing your location
+                is optional.
               </Text>
               <Button
                 variant="ghost"
@@ -158,7 +156,7 @@ export default function ReceivedSmileScreen() {
                 className="mt-2 h-12 rounded-full"
               >
                 <Globe2 color={foreground} size={18} />
-                <Button.Label>Ohne Standort bestätigen</Button.Label>
+                <Button.Label>Confirm without location</Button.Label>
               </Button>
               {errorMessage ? (
                 <Text className="text-danger mt-3 text-center text-sm">{errorMessage}</Text>

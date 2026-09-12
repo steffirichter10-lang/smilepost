@@ -154,7 +154,7 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="smile"
-            options={{ title: 'Dein Smile', headerShown: false, presentation: 'modal' }}
+            options={{ title: 'Your Smile', headerShown: false, presentation: 'modal' }}
           />
         </Stack>
         <InstallPrompt />

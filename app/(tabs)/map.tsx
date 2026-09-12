@@ -22,7 +22,7 @@ export default function SmileMapScreen() {
       setSummaries(await loadSmileSummaries());
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : 'Dein Smile-Impact konnte nicht geladen werden.',
+        error instanceof Error ? error.message : 'We couldn’t load your Smile impact.',
       );
     } finally {
       setIsLoading(false);
@@ -52,8 +52,9 @@ export default function SmileMapScreen() {
         nextMarkers.push({
           id: node.id,
           coordinate,
-          title: node.generation === 1 ? 'Hier kam dein Smile an' : `Smile ${node.generation}`,
-          description: `Station ${node.generation} dieser Smile-Kette`,
+          title:
+            node.generation === 1 ? 'This is where your Smile arrived' : `Smile ${node.generation}`,
+          description: `Stop ${node.generation} in this Smile chain`,
           color: chainIndex % 2 === 0 ? 'orange' : 'purple',
         });
         const parentCoordinate = node.parentId ? locations.get(node.parentId) : undefined;
@@ -87,16 +88,16 @@ export default function SmileMapScreen() {
         <View className={isCompact ? 'mb-3 flex-row items-start' : 'mb-5 flex-row items-start'}>
           <View className="flex-1 pr-3">
             <Text className="text-muted text-xs font-semibold tracking-[2.5px]">
-              DEIN SMILE IMPACT
+              YOUR SMILE IMPACT
             </Text>
             <Text
               className={`text-foreground mt-1 font-bold ${isCompact ? 'text-3xl' : 'text-4xl'}`}
             >
-              Ein Smile wirkt weiter.
+              A Smile keeps making a difference.
             </Text>
             {!isCompact ? (
               <Text className="text-muted mt-2 max-w-2xl text-sm leading-5">
-                Jede bestätigte Weitergabe lässt deine persönliche Smile-Kette wachsen.
+                Every confirmed handoff helps your personal Smile chain grow.
               </Text>
             ) : null}
           </View>
@@ -119,19 +120,19 @@ export default function SmileMapScreen() {
           <ImpactCard
             icon={Heart}
             value={confirmedSmiles}
-            label="Smiles ausgelöst"
+            label="Smiles inspired"
             colorClass="bg-blush"
           />
           <ImpactCard
             icon={GitFork}
             value={generations}
-            label="Weitergabe-Stufen"
+            label="Handoff stages"
             colorClass="bg-lilac"
           />
           <ImpactCard
             icon={Globe2}
             value={markers.length}
-            label="Auf der Weltkarte"
+            label="On the world map"
             colorClass="bg-sun"
           />
         </View>
@@ -156,10 +157,10 @@ export default function SmileMapScreen() {
                 <Sparkles color={foreground} size={20} />
               </View>
               <Text className="text-foreground mt-3 text-center text-lg font-bold">
-                Dein erster Impact wartet.
+                Your first impact is waiting.
               </Text>
               <Text className="text-muted mt-1 text-center text-sm leading-5">
-                Sende einen Smile. Sobald er bestätigt wird, beginnt hier seine echte Reise.
+                Send a Smile. Once it’s confirmed, its real journey will begin here.
               </Text>
             </View>
           ) : null}
@@ -169,11 +170,11 @@ export default function SmileMapScreen() {
           <Text className="text-danger mt-3 text-center text-sm">{errorMessage}</Text>
         ) : markers.length < confirmedSmiles && confirmedSmiles > 0 ? (
           <Text className="mt-3 text-center text-xs leading-4" style={{ color: muted }}>
-            {confirmedSmiles - markers.length} bestätigte Smiles werden ohne Standort mitgezählt.
+            {confirmedSmiles - markers.length} confirmed Smiles are counted without a location.
           </Text>
         ) : (
           <Text className="text-muted mt-3 text-center text-xs leading-4">
-            Die Karte zeigt nur freiwillig geteilte, grobe Bereiche.
+            The map only shows approximate areas shared voluntarily.
           </Text>
         )}
       </View>

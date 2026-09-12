@@ -44,7 +44,7 @@ function asObject(value: unknown): RpcObject | null {
 
 function requiredString(value: unknown, field: string): string {
   if (typeof value !== 'string' || value.length === 0) {
-    throw new Error(`Ungültige Antwort: ${field} fehlt.`);
+    throw new Error(`Invalid response: ${field} is missing.`);
   }
   return value;
 }
@@ -60,8 +60,7 @@ export async function createChainLink(parentToken?: string): Promise<ChainLink> 
 
   if (response.error) throw new Error(response.error.message);
   const result = asObject(response.data);
-  if (!result || result.ok !== true)
-    throw new Error('Der Smile-Link konnte nicht erstellt werden.');
+  if (!result || result.ok !== true) throw new Error('We couldn’t create the Smile link.');
 
   const chainLink = {
     shareToken: requiredString(result.shareToken, 'shareToken'),
@@ -84,7 +83,7 @@ export async function resolveSmile(token: string) {
   const { data, error } = await bilt.rpc('resolve_smile_link', { token });
   if (error) throw new Error(error.message);
   const result = asObject(data);
-  if (!result || result.ok !== true) throw new Error('Dieser Smile-Link ist nicht mehr gültig.');
+  if (!result || result.ok !== true) throw new Error('This Smile link is no longer valid.');
   return {
     generation: numberValue(result.generation),
     confirmed: Boolean(result.confirmed),
@@ -102,7 +101,7 @@ export async function confirmSmile(
   });
   if (error) throw new Error(error.message);
   const result = asObject(data);
-  if (!result || result.ok !== true) throw new Error('Der Smile konnte nicht bestätigt werden.');
+  if (!result || result.ok !== true) throw new Error('We couldn’t confirm this Smile.');
 }
 
 export async function loadSmileSummaries(): Promise<SmileChainSummary[]> {

@@ -8,16 +8,16 @@ const SCHEDULED_DAYS = 14;
 const MINIMUM_SCHEDULED_SMILES = 7;
 
 const SMILE_MESSAGES = [
-  'Dein Lächeln kann heute jemandem den Tag verschönern.',
-  'Kleine Freude, große Wirkung: Schenk heute jemandem ein Lächeln.',
-  'Du bist ein guter Grund, heute zu lächeln.',
-  'Ein lieber Gedanke für dich: Schön, dass es dich gibt.',
-  'Heute darfst du dir selbst ein Lächeln schenken.',
-  'Manchmal beginnt ein schöner Moment mit einem einfachen Lächeln.',
-  'Ein Lächeln kostet nichts und kann trotzdem unbezahlbar sein.',
-  'Denk kurz an etwas, das dich glücklich macht.',
-  'Deine positive Art macht einen Unterschied.',
-  'Ein kleiner Smile für zwischendurch – nur für dich.',
+  'Your smile could brighten someone’s day today.',
+  'Small joy, big impact: Make someone smile today.',
+  'You’re a wonderful reason to smile today.',
+  'A kind thought for you: It’s good to have you here.',
+  'Today, give yourself a reason to smile.',
+  'Sometimes a beautiful moment begins with a simple smile.',
+  'A smile costs nothing, yet it can be priceless.',
+  'Take a moment to think of something that makes you happy.',
+  'Your positive spirit makes a difference.',
+  'A little Smile for your day—just for you.',
 ];
 
 export type SmileNotificationStatus = 'enabled' | 'disabled' | 'unsupported';
@@ -64,7 +64,7 @@ async function scheduleSmiles() {
   for (let day = 0; day < SCHEDULED_DAYS; day += 1) {
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: 'Ein Smile für dich',
+        title: 'A Smile for you',
         body: randomMessage(),
         data: { kind: SMILE_NOTIFICATION_KIND },
         sound: true,
@@ -98,7 +98,7 @@ export async function enableSmileNotifications(): Promise<SmileNotificationStatu
 
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('daily-smiles', {
-      name: 'Tägliche Smiles',
+      name: 'Daily Smiles',
       importance: Notifications.AndroidImportance.DEFAULT,
     });
   }

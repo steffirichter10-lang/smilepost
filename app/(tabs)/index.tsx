@@ -40,7 +40,7 @@ export default function HomeScreen() {
           <Text
             className={`text-muted max-w-xl text-base ${isCompact ? 'mt-2 leading-5' : 'mt-3 leading-6'}`}
           >
-            Ein kleiner Moment, eine persönliche Nachricht und ein Lächeln, das weiterwirkt.
+            A small moment, a personal message, and a smile that keeps making a difference.
           </Text>
         </View>
 
@@ -58,8 +58,8 @@ export default function HomeScreen() {
             </View>
             <View className="absolute right-5 bottom-4 left-5 flex-row items-end justify-between">
               <View>
-                <Text className="text-foreground text-base font-bold">Dein Video</Text>
-                <Text className="text-muted mt-1 text-xs">Video-Platzhalter</Text>
+                <Text className="text-foreground text-base font-bold">Your video</Text>
+                <Text className="text-muted mt-1 text-xs">Video placeholder</Text>
               </View>
               <View className="rounded-full bg-white/70 px-3 py-1.5">
                 <Text className="text-foreground text-xs font-semibold">00:00</Text>
@@ -74,7 +74,7 @@ export default function HomeScreen() {
             onPress={() => router.push('/send')}
             className="h-14 flex-1 rounded-full"
           >
-            <Button.Label className="font-semibold">Ein Lächeln senden</Button.Label>
+            <Button.Label className="font-semibold">Send a smile</Button.Label>
             <ArrowRight color={accentForeground} size={20} />
           </Button>
         </View>

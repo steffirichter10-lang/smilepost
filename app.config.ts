@@ -49,7 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         'expo-location',
         {
           locationWhenInUsePermission:
-            'SmilePost verwendet deinen Standort nur freiwillig und grob, um den Weg deines Smiles auf der Impact Map zu zeigen.',
+            'SmilePost uses your location only when you choose to share it, and only as an approximate area, to show your Smile’s journey on the Impact Map.',
         },
       ],
       ...nativePlugins,
