@@ -11,7 +11,6 @@ import {
   Share2,
   Sparkles,
   Star,
-  WandSparkles,
 } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import {
@@ -27,17 +26,14 @@ import {
 
 import { GesturePressable } from '@/components/ui/primitives/GesturePressable';
 import { buildSmileUrl, createChainLink } from '@/lib/smileChains';
-import { bilt } from '@/lib/bilt';
 
 type Reason = {
   id: string;
   label: string;
-  prompt: string;
   className: string;
   icon: typeof Heart;
 };
 
-type ImproveResponse = { message?: string };
 type ActiveChainLink = { shareToken: string; trackerToken: string };
 
 const SMILE_FOOTER =
@@ -47,28 +43,24 @@ const REASONS: Reason[] = [
   {
     id: 'thinking',
     label: 'Ich denke an dich',
-    prompt: 'Ich möchte zeigen, dass ich an die Person denke.',
     className: 'bg-lilac',
     icon: Sparkles,
   },
   {
     id: 'thanks',
     label: 'Danke sagen',
-    prompt: 'Ich möchte mich ehrlich bedanken.',
     className: 'bg-blush',
     icon: MessageCircleHeart,
   },
   {
     id: 'impact',
     label: 'Du bewegst mich',
-    prompt: 'Ich möchte sagen, welchen positiven Unterschied die Person macht.',
     className: 'bg-sand',
     icon: Heart,
   },
   {
     id: 'proud',
     label: 'Ich bin stolz auf dich',
-    prompt: 'Ich möchte Anerkennung und Stolz ausdrücken.',
     className: 'bg-sun',
     icon: Star,
   },
@@ -82,7 +74,6 @@ export default function SendScreen() {
   const [reasonId, setReasonId] = useState('');
   const [details, setDetails] = useState('');
   const [message, setMessage] = useState('');
-  const [isImproving, setIsImproving] = useState(false);
   const [isPreparingShare, setIsPreparingShare] = useState(false);
   const [activeChainLink, setActiveChainLink] = useState<ActiveChainLink | null>(null);
   const [feedback, setFeedback] = useState('');
@@ -109,24 +100,6 @@ export default function SendScreen() {
       return;
     }
     setStep(2);
-  };
-
-  const improveMessage = async () => {
-    if (!selectedReason || !details.trim()) return;
-    setIsImproving(true);
-    setFeedback('');
-    const { data, error } = await bilt.functions.invoke<ImproveResponse>('improve-smile-message', {
-      body: { name: name.trim(), reason: selectedReason.prompt, details: details.trim() },
-    });
-    setIsImproving(false);
-    if (error || !data?.message) {
-      setFeedback(
-        'Die KI ist noch nicht verbunden. Du kannst deinen Entwurf trotzdem bearbeiten und teilen.',
-      );
-      return;
-    }
-    setMessage(data.message);
-    setFeedback('Deine Nachricht wurde verfeinert.');
   };
 
   const prepareSharedMessage = async () => {
@@ -303,74 +276,6 @@ export default function SendScreen() {
                     className={`bg-background web:min-h-56 rounded-[24px] px-5 text-base leading-6 ${isResultCompact ? 'h-28 py-3' : 'min-h-40 py-4'}`}
                   />
                 </TextField>
-                <Button
-                  variant="secondary"
-                  onPress={improveMessage}
-                  isDisabled={isImproving}
-                  className={`bg-lilac rounded-full ${isResultCompact ? 'mt-2 h-11' : 'mt-4 h-13'}`}
-                >
-                  {isImproving ? (
-                    <Spinner color={foreground} />
-                  ) : (
-                    <>
-                      <WandSparkles size={isResultCompact ? 17 : 19} color={foreground} />
-                      <Button.Label className="font-semibold">Mit KI verbessern</Button.Label>
-                    </>
-                  )}
-                </Button>
-                {feedback ? (
-                  <Text
-                    className={`text-muted text-sm leading-5 ${isResultCompact ? 'mt-1.5' : 'mt-3'}`}
-                  >
-                    {feedback}
-                  </Text>
-                ) : null}
-                <View
-                  className={`bg-sun/55 flex-row items-center rounded-[20px] ${isResultCompact ? 'mt-2 p-2.5' : 'mt-4 p-3.5'}`}
-                >
-                  <Sparkles size={isResultCompact ? 17 : 20} color={foreground} />
-                  <Text
-                    className={`text-foreground ml-2.5 flex-1 ${isResultCompact ? 'text-xs leading-4' : 'text-sm leading-5'}`}
-                  >
-                    Beim Senden erhält deine Nachricht einen persönlichen Link. So siehst du auf der
-                    Impact Map, wie dein Smile weitergegeben wird.
-                  </Text>
-                </View>
-                <View className={`web:mt-7 ${isResultCompact ? 'mt-2 gap-2' : 'mt-5 gap-3'}`}>
-                  <Button
-                    variant="primary"
-                    onPress={shareOnWhatsApp}
-                    isDisabled={isPreparingShare}
-                    className={`${isResultCompact ? 'h-12' : 'h-14'} rounded-full`}
-                  >
-                    {isPreparingShare ? (
-                      <Spinner color={accentForeground} />
-                    ) : (
-                      <MessageCircleHeart size={20} color={accentForeground} />
-                    )}
-                    <Button.Label className="font-semibold">Über WhatsApp senden</Button.Label>
-                  </Button>
-                  <View className={isResultCompact ? 'flex-row gap-2' : 'flex-row gap-3'}>
-                    <Button
-                      variant="secondary"
-                      onPress={shareMessage}
-                      isDisabled={isPreparingShare}
-                      className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
-                    >
-                      <Share2 size={isResultCompact ? 17 : 19} color={foreground} />
-                      <Button.Label>Teilen</Button.Label>
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onPress={copyMessage}
-                      isDisabled={isPreparingShare}
-                      className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
-                    >
-                      <Copy size={isResultCompact ? 17 : 19} color={foreground} />
-                      <Button.Label>Kopieren</Button.Label>
-                    </Button>
-                  </View>
-                </View>
               </View>
             ) : null}
 
@@ -397,17 +302,6 @@ export default function SendScreen() {
                     <ArrowRight size={20} color={accentForeground} />
                   </Button>
                 </View>
-                {step === 2 ? (
-                  <View
-                    className={`bg-sun/55 web:mt-5 flex-row items-center rounded-[18px] ${isDetailsCompact ? 'mt-2 p-2.5' : 'mt-3 p-3.5'}`}
-                  >
-                    <WandSparkles size={18} color={foreground} />
-                    <Text className="text-foreground ml-2.5 flex-1 text-sm leading-5">
-                      Im nächsten Schritt kannst du deine Worte mit KI noch wärmer und persönlicher
-                      formulieren lassen.
-                    </Text>
-                  </View>
-                ) : null}
               </>
             ) : (
               <Button
@@ -419,6 +313,56 @@ export default function SendScreen() {
                 <Button.Label>Text ändern</Button.Label>
               </Button>
             )}
+
+            {step === 3 ? (
+              <View className={`web:mt-7 ${isResultCompact ? 'mt-2 gap-2' : 'mt-5 gap-3'}`}>
+                <Button
+                  variant="primary"
+                  onPress={shareOnWhatsApp}
+                  isDisabled={isPreparingShare}
+                  className={`${isResultCompact ? 'h-12' : 'h-14'} rounded-full`}
+                >
+                  {isPreparingShare ? (
+                    <Spinner color={accentForeground} />
+                  ) : (
+                    <MessageCircleHeart size={20} color={accentForeground} />
+                  )}
+                  <Button.Label className="font-semibold">Über WhatsApp senden</Button.Label>
+                </Button>
+                <View className={isResultCompact ? 'flex-row gap-2' : 'flex-row gap-3'}>
+                  <Button
+                    variant="secondary"
+                    onPress={shareMessage}
+                    isDisabled={isPreparingShare}
+                    className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
+                  >
+                    <Share2 size={isResultCompact ? 17 : 19} color={foreground} />
+                    <Button.Label>Teilen</Button.Label>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onPress={copyMessage}
+                    isDisabled={isPreparingShare}
+                    className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
+                  >
+                    <Copy size={isResultCompact ? 17 : 19} color={foreground} />
+                    <Button.Label>Kopieren</Button.Label>
+                  </Button>
+                </View>
+                <View
+                  className={`bg-sun/55 flex-row items-center rounded-[20px] ${isResultCompact ? 'p-2.5' : 'p-3.5'}`}
+                >
+                  <Sparkles size={isResultCompact ? 17 : 20} color={foreground} />
+                  <Text
+                    className={`text-foreground ml-2.5 flex-1 ${isResultCompact ? 'text-xs leading-4' : 'text-sm leading-5'}`}
+                  >
+                    Beim Senden erhält deine Nachricht einen persönlichen Link. So siehst du auf der
+                    Impact Map, wie dein Smile weitergegeben wird.
+                  </Text>
+                </View>
+                {feedback ? <Text className="text-muted text-sm leading-5">{feedback}</Text> : null}
+              </View>
+            ) : null}
           </View>
           {!useCompactLayout ? (
             <Text className="text-muted web:mt-5 mt-3 text-center text-xs leading-4">
