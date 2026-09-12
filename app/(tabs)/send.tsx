@@ -20,6 +20,7 @@ import {
   ScrollView,
   Share,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native';
 
@@ -75,6 +76,8 @@ export default function SendScreen() {
   const [message, setMessage] = useState('');
   const [isImproving, setIsImproving] = useState(false);
   const [feedback, setFeedback] = useState('');
+  const { height } = useWindowDimensions();
+  const isCompact = height < 820;
   const [foreground, accentForeground] = useThemeColor(['foreground', 'accent-foreground']);
   const selectedReason = useMemo(
     () => REASONS.find((reason) => reason.id === reasonId),
@@ -126,37 +129,47 @@ export default function SendScreen() {
       <PastelBackdrop />
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="p-safe-or-4 flex-grow"
+        contentContainerClassName="px-4 pb-safe-or-2 pt-safe-or-2 flex-grow"
         showsVerticalScrollIndicator={false}
       >
-        <View className="web:py-8 mx-auto w-full max-w-2xl flex-1 py-2">
-          <Text className="text-muted mb-3 text-center text-[11px] font-semibold tracking-[3px]">
+        <View className="web:py-8 mx-auto w-full max-w-2xl flex-1 py-1">
+          <Text
+            className={`text-muted text-center text-[11px] font-semibold tracking-[3px] ${isCompact ? 'mb-1' : 'mb-3'}`}
+          >
             TO MAKE SOMEONE SMILE
           </Text>
-          <StepHeader step={step} />
-          <View className="bg-card/90 web:mt-5 web:p-9 mt-3 overflow-hidden rounded-[32px] border border-white/80 p-5 shadow-sm">
+          <StepHeader step={step} compact={isCompact} />
+          <View
+            className={`bg-card/90 web:mt-5 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isCompact ? 'mt-2 p-4' : 'mt-3 p-5'}`}
+          >
             {step === 1 ? (
               <View>
-                <Text className="text-foreground web:text-5xl text-3xl leading-tight font-bold">
+                <Text
+                  className={`text-foreground web:text-5xl leading-tight font-bold ${isCompact ? 'text-[28px]' : 'text-3xl'}`}
+                >
                   Für wen?
                 </Text>
-                <Text className="text-muted mt-2 text-base leading-6">
+                <Text
+                  className={`text-muted text-base ${isCompact ? 'mt-1 leading-5' : 'mt-2 leading-6'}`}
+                >
                   Wem möchtest du heute ein Lächeln schenken?
                 </Text>
-                <TextField className="web:mt-7 mt-5">
+                <TextField className={isCompact ? 'mt-3' : 'web:mt-7 mt-5'}>
                   <Input
                     value={name}
                     onChangeText={setName}
                     placeholder="Name, z. B. Mia"
                     autoCapitalize="words"
                     returnKeyType="done"
-                    className="bg-background h-14 rounded-full px-5 text-base"
+                    className={`bg-background rounded-full px-5 text-base ${isCompact ? 'h-12' : 'h-14'}`}
                   />
                 </TextField>
-                <Text className="text-foreground web:mt-7 mt-5 mb-3 text-sm font-semibold">
+                <Text
+                  className={`text-foreground text-sm font-semibold ${isCompact ? 'mt-3 mb-2' : 'web:mt-7 mt-5 mb-3'}`}
+                >
                   Was ist dein Anlass?
                 </Text>
-                <View className="flex-row flex-wrap gap-3">
+                <View className={`flex-row flex-wrap ${isCompact ? 'gap-2' : 'gap-3'}`}>
                   {REASONS.map((reason) => {
                     const Icon = reason.icon;
                     const selected = reason.id === reasonId;
@@ -166,9 +179,11 @@ export default function SendScreen() {
                         accessibilityRole="button"
                         accessibilityState={{ selected }}
                         onPress={() => setReasonId(reason.id)}
-                        className={`web:min-h-28 web:flex-col web:items-stretch web:justify-between web:p-3 min-h-16 w-[47%] flex-grow flex-row items-center rounded-[20px] border p-2.5 ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
+                        className={`web:min-h-28 web:flex-col web:items-stretch web:justify-between web:p-3 w-[47%] flex-grow flex-row items-center rounded-[20px] border ${isCompact ? 'min-h-14 p-2' : 'min-h-16 p-2.5'} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
                       >
-                        <View className="web:size-9 size-8 shrink-0 items-center justify-center rounded-full bg-white/65">
+                        <View
+                          className={`web:size-9 shrink-0 items-center justify-center rounded-full bg-white/65 ${isCompact ? 'size-7' : 'size-8'}`}
+                        >
                           {selected ? (
                             <Check size={18} color={foreground} />
                           ) : (
@@ -192,24 +207,26 @@ export default function SendScreen() {
                     {selectedReason?.label}
                   </Text>
                 </View>
-                <Text className="text-foreground web:text-5xl mt-4 text-3xl leading-tight font-bold">
+                <Text className="text-foreground web:text-5xl mt-3 text-3xl leading-tight font-bold">
                   Was soll {name.trim()} wissen?
                 </Text>
-                <Text className="text-muted mt-2 text-base leading-6">
+                <Text className="text-muted mt-1 text-base leading-5">
                   Schreib einfach frei heraus. Stichpunkte reichen völlig.
                 </Text>
-                <TextField className="web:mt-7 mt-5">
+                <TextField className={isCompact ? 'mt-3' : 'web:mt-7 mt-5'}>
                   <TextArea
                     value={details}
                     onChangeText={setDetails}
                     placeholder="Zum Beispiel: Danke, dass du immer zuhörst …"
                     autoFocus
                     maxLength={900}
-                    className="bg-background web:min-h-44 min-h-36 rounded-[24px] px-5 py-4 text-base leading-6"
+                    className={`bg-background web:min-h-44 rounded-[24px] px-5 py-4 text-base leading-6 ${isCompact ? 'min-h-28' : 'min-h-36'}`}
                   />
                 </TextField>
                 <Text className="text-muted mt-2 text-right text-xs">{details.length}/900</Text>
-                <View className="bg-sun/55 web:mt-5 mt-3 flex-row items-center rounded-[20px] p-3.5">
+                <View
+                  className={`bg-sun/55 web:mt-5 flex-row items-center rounded-[20px] ${isCompact ? 'mt-2 p-2.5' : 'mt-3 p-3.5'}`}
+                >
                   <WandSparkles size={20} color={foreground} />
                   <Text className="text-foreground ml-3 flex-1 text-sm leading-5">
                     Im nächsten Schritt kannst du deinen Text mit KI wärmer und persönlicher
@@ -289,13 +306,13 @@ export default function SendScreen() {
             ) : null}
 
             {step < 3 ? (
-              <View className="web:mt-8 mt-5 flex-row gap-3">
+              <View className={`web:mt-8 flex-row gap-3 ${isCompact ? 'mt-3' : 'mt-5'}`}>
                 {step > 1 ? (
                   <Button
                     variant="secondary"
                     isIconOnly
                     onPress={() => setStep(1)}
-                    className="size-14 rounded-full"
+                    className={`${isCompact ? 'size-12' : 'size-14'} rounded-full`}
                   >
                     <ArrowLeft size={21} color={foreground} />
                   </Button>
@@ -304,7 +321,7 @@ export default function SendScreen() {
                   variant="primary"
                   isDisabled={!canContinue}
                   onPress={goForward}
-                  className="h-14 flex-1 rounded-full"
+                  className={`${isCompact ? 'h-12' : 'h-14'} flex-1 rounded-full`}
                 >
                   <Button.Label className="font-semibold">Weiter</Button.Label>
                   <ArrowRight size={20} color={accentForeground} />
@@ -321,9 +338,11 @@ export default function SendScreen() {
               </Button>
             )}
           </View>
-          <Text className="text-muted web:mt-5 mt-3 text-center text-xs leading-4">
-            Kleine Worte. Große Wirkung.
-          </Text>
+          {!isCompact ? (
+            <Text className="text-muted web:mt-5 mt-3 text-center text-xs leading-4">
+              Kleine Worte. Große Wirkung.
+            </Text>
+          ) : null}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -340,21 +359,29 @@ function PastelBackdrop() {
   );
 }
 
-function StepHeader({ step }: { step: number }) {
+function StepHeader({ step, compact }: { step: number; compact: boolean }) {
   const titles = ['Für wen?', 'Was möchtest du sagen?', 'Deine Nachricht'];
   return (
-    <View className="border-border/70 bg-card/80 flex-row items-center rounded-full border p-2">
-      <View className="bg-foreground web:size-11 size-10 items-center justify-center rounded-full">
-        <Text className="text-background text-base font-semibold">{step}</Text>
+    <View
+      className={`border-border/70 bg-card/80 flex-row items-center rounded-full border ${compact ? 'p-1' : 'p-2'}`}
+    >
+      <View
+        className={`bg-foreground web:size-11 items-center justify-center rounded-full ${compact ? 'size-8' : 'size-10'}`}
+      >
+        <Text className={`text-background font-semibold ${compact ? 'text-sm' : 'text-base'}`}>
+          {step}
+        </Text>
       </View>
-      <Text className="text-foreground ml-3 flex-1 text-base font-semibold">
+      <Text
+        className={`text-foreground flex-1 font-semibold ${compact ? 'ml-2 text-sm' : 'ml-3 text-base'}`}
+      >
         {titles[step - 1]}
       </Text>
-      <View className="mr-2 flex-row gap-2">
+      <View className={`mr-2 flex-row ${compact ? 'gap-1.5' : 'gap-2'}`}>
         {[1, 2, 3].map((item) => (
           <View
             key={item}
-            className={`size-2.5 rounded-full ${item <= step ? 'bg-accent' : 'bg-border'}`}
+            className={`${compact ? 'size-2' : 'size-2.5'} rounded-full ${item <= step ? 'bg-accent' : 'bg-border'}`}
           />
         ))}
       </View>
