@@ -23,6 +23,10 @@ import {
 } from 'expo-router';
 
 import { initPostHog } from '@/lib/posthog';
+import {
+  configureSmileNotificationHandler,
+  refreshSmileNotifications,
+} from '@/lib/smileNotifications';
 import { registerServiceWorker } from '@/lib/registerServiceWorker';
 import { reportErrorToParent } from '@/lib/reportPreviewError';
 import { InstallPrompt } from '@/components/InstallPrompt';
@@ -45,6 +49,7 @@ export { ErrorBoundary };
 
 // Starter is light-only by default. Remove this when implementing requested dark mode.
 Uniwind.setTheme('light');
+configureSmileNotificationHandler();
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -126,6 +131,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     registerServiceWorker();
+    void refreshSmileNotifications();
   }, []);
 
   useEffect(() => {
