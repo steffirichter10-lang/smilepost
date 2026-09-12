@@ -88,6 +88,7 @@ export default function SendScreen() {
   const [feedback, setFeedback] = useState('');
   const { height } = useWindowDimensions();
   const isCompact = height < 820;
+  const isDetailsCompact = step === 2 && height < 900;
   const [foreground, accentForeground] = useThemeColor(['foreground', 'accent-foreground']);
   const selectedReason = useMemo(
     () => REASONS.find((reason) => reason.id === reasonId),
@@ -178,13 +179,13 @@ export default function SendScreen() {
       >
         <View className="web:pt-5 web:pb-8 mx-auto w-full max-w-2xl flex-1 pb-1">
           <Text
-            className={`text-muted text-center text-[11px] font-semibold tracking-[3px] ${isCompact ? 'mb-0' : 'mb-2'}`}
+            className={`text-muted text-center text-[11px] font-semibold tracking-[3px] ${isCompact || isDetailsCompact ? 'mb-0' : 'mb-2'}`}
           >
             TO MAKE SOMEONE SMILE
           </Text>
-          <StepHeader step={step} compact={isCompact} />
+          <StepHeader step={step} compact={isCompact || isDetailsCompact} />
           <View
-            className={`bg-card/90 web:mt-4 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isCompact ? 'mt-1 p-4' : 'mt-2 p-5'}`}
+            className={`bg-card/90 web:mt-4 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isCompact || isDetailsCompact ? 'mt-1 p-4' : 'mt-2 p-5'}`}
           >
             {step === 1 ? (
               <View>
@@ -246,37 +247,37 @@ export default function SendScreen() {
 
             {step === 2 ? (
               <View>
-                <View className="bg-lilac self-start rounded-full px-3.5 py-1.5">
+                <View
+                  className={`bg-lilac self-start rounded-full px-3.5 ${isDetailsCompact ? 'py-1' : 'py-1.5'}`}
+                >
                   <Text className="text-foreground text-xs font-semibold">
                     {selectedReason?.label}
                   </Text>
                 </View>
-                <Text className="text-foreground web:text-5xl mt-3 text-3xl leading-tight font-bold">
+                <Text
+                  className={`text-foreground web:text-5xl leading-tight font-bold ${isDetailsCompact ? 'mt-2 text-[27px]' : 'mt-3 text-3xl'}`}
+                >
                   Was soll {name.trim()} wissen?
                 </Text>
-                <Text className="text-muted mt-1 text-base leading-5">
+                <Text
+                  className={`text-muted text-base ${isDetailsCompact ? 'mt-0.5 leading-5' : 'mt-1 leading-5'}`}
+                >
                   Schreib einfach frei heraus. Stichpunkte reichen völlig.
                 </Text>
-                <TextField className={isCompact ? 'mt-3' : 'web:mt-7 mt-5'}>
+                <TextField className={isDetailsCompact ? 'mt-2.5' : 'web:mt-7 mt-5'}>
                   <TextArea
                     value={details}
                     onChangeText={setDetails}
                     placeholder="Zum Beispiel: Danke, dass du immer zuhörst …"
-                    autoFocus
                     maxLength={900}
-                    className={`bg-background web:min-h-44 rounded-[24px] px-5 py-4 text-base leading-6 ${isCompact ? 'min-h-28' : 'min-h-36'}`}
+                    className={`bg-background web:min-h-44 rounded-[24px] px-5 text-base leading-6 ${isDetailsCompact ? 'min-h-24 py-3' : 'min-h-36 py-4'}`}
                   />
                 </TextField>
-                <Text className="text-muted mt-2 text-right text-xs">{details.length}/900</Text>
-                <View
-                  className={`bg-sun/55 web:mt-5 flex-row items-center rounded-[20px] ${isCompact ? 'mt-2 p-2.5' : 'mt-3 p-3.5'}`}
+                <Text
+                  className={`text-muted text-right text-xs ${isDetailsCompact ? 'mt-1' : 'mt-2'}`}
                 >
-                  <WandSparkles size={20} color={foreground} />
-                  <Text className="text-foreground ml-3 flex-1 text-sm leading-5">
-                    Im nächsten Schritt kannst du deinen Text mit KI wärmer und persönlicher
-                    formulieren.
-                  </Text>
-                </View>
+                  {details.length}/900
+                </Text>
               </View>
             ) : null}
 
@@ -360,27 +361,42 @@ export default function SendScreen() {
             ) : null}
 
             {step < 3 ? (
-              <View className={`web:mt-8 flex-row gap-3 ${isCompact ? 'mt-3' : 'mt-5'}`}>
-                {step > 1 ? (
-                  <Button
-                    variant="secondary"
-                    isIconOnly
-                    onPress={() => setStep(1)}
-                    className={`${isCompact ? 'size-12' : 'size-14'} rounded-full`}
-                  >
-                    <ArrowLeft size={21} color={foreground} />
-                  </Button>
-                ) : null}
-                <Button
-                  variant="primary"
-                  isDisabled={!canContinue}
-                  onPress={goForward}
-                  className={`${isCompact ? 'h-12' : 'h-14'} flex-1 rounded-full`}
+              <>
+                <View
+                  className={`web:mt-8 flex-row gap-3 ${isCompact || isDetailsCompact ? 'mt-2.5' : 'mt-5'}`}
                 >
-                  <Button.Label className="font-semibold">Weiter</Button.Label>
-                  <ArrowRight size={20} color={accentForeground} />
-                </Button>
-              </View>
+                  {step > 1 ? (
+                    <Button
+                      variant="secondary"
+                      isIconOnly
+                      onPress={() => setStep(1)}
+                      className={`${isCompact || isDetailsCompact ? 'size-12' : 'size-14'} rounded-full`}
+                    >
+                      <ArrowLeft size={21} color={foreground} />
+                    </Button>
+                  ) : null}
+                  <Button
+                    variant="primary"
+                    isDisabled={!canContinue}
+                    onPress={goForward}
+                    className={`${isCompact || isDetailsCompact ? 'h-12' : 'h-14'} flex-1 rounded-full`}
+                  >
+                    <Button.Label className="font-semibold">Weiter</Button.Label>
+                    <ArrowRight size={20} color={accentForeground} />
+                  </Button>
+                </View>
+                {step === 2 ? (
+                  <View
+                    className={`bg-sun/55 web:mt-5 flex-row items-center rounded-[18px] ${isDetailsCompact ? 'mt-2 p-2.5' : 'mt-3 p-3.5'}`}
+                  >
+                    <WandSparkles size={18} color={foreground} />
+                    <Text className="text-foreground ml-2.5 flex-1 text-sm leading-5">
+                      Im nächsten Schritt kannst du deine Worte mit KI noch wärmer und persönlicher
+                      formulieren lassen.
+                    </Text>
+                  </View>
+                ) : null}
+              </>
             ) : (
               <Button
                 variant="ghost"
@@ -392,7 +408,7 @@ export default function SendScreen() {
               </Button>
             )}
           </View>
-          {!isCompact ? (
+          {!isCompact && !isDetailsCompact ? (
             <Text className="text-muted web:mt-5 mt-3 text-center text-xs leading-4">
               Kleine Worte. Große Wirkung.
             </Text>
