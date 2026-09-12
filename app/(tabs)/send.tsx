@@ -126,24 +126,24 @@ export default function SendScreen() {
       <PastelBackdrop />
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="p-safe-or-5 flex-grow"
+        contentContainerClassName="p-safe-or-4 flex-grow"
         showsVerticalScrollIndicator={false}
       >
-        <View className="web:py-8 mx-auto w-full max-w-2xl flex-1 py-4">
-          <Text className="text-muted mb-5 text-center text-xs font-semibold tracking-[3px]">
+        <View className="web:py-8 mx-auto w-full max-w-2xl flex-1 py-2">
+          <Text className="text-muted mb-3 text-center text-[11px] font-semibold tracking-[3px]">
             TO MAKE SOMEONE SMILE
           </Text>
           <StepHeader step={step} />
-          <View className="bg-card/90 web:p-9 mt-5 overflow-hidden rounded-[36px] border border-white/80 p-6 shadow-sm">
+          <View className="bg-card/90 web:mt-5 web:p-9 mt-3 overflow-hidden rounded-[32px] border border-white/80 p-5 shadow-sm">
             {step === 1 ? (
               <View>
-                <Text className="text-foreground web:text-5xl text-4xl leading-tight font-bold">
+                <Text className="text-foreground web:text-5xl text-3xl leading-tight font-bold">
                   Für wen?
                 </Text>
                 <Text className="text-muted mt-2 text-base leading-6">
                   Wem möchtest du heute ein Lächeln schenken?
                 </Text>
-                <TextField className="mt-7">
+                <TextField className="web:mt-7 mt-5">
                   <Input
                     value={name}
                     onChangeText={setName}
@@ -153,7 +153,7 @@ export default function SendScreen() {
                     className="bg-background h-14 rounded-full px-5 text-base"
                   />
                 </TextField>
-                <Text className="text-foreground mt-7 mb-3 text-sm font-semibold">
+                <Text className="text-foreground web:mt-7 mt-5 mb-3 text-sm font-semibold">
                   Was ist dein Anlass?
                 </Text>
                 <View className="flex-row flex-wrap gap-3">
@@ -166,16 +166,16 @@ export default function SendScreen() {
                         accessibilityRole="button"
                         accessibilityState={{ selected }}
                         onPress={() => setReasonId(reason.id)}
-                        className={`min-h-36 w-[47%] flex-grow justify-between rounded-[28px] border p-4 ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
+                        className={`web:min-h-36 web:flex-col web:items-stretch web:justify-between web:p-4 min-h-20 w-[47%] flex-grow flex-row items-center rounded-[24px] border p-3 ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
                       >
-                        <View className="size-10 items-center justify-center rounded-full bg-white/65">
+                        <View className="web:size-10 size-9 shrink-0 items-center justify-center rounded-full bg-white/65">
                           {selected ? (
                             <Check size={20} color={foreground} />
                           ) : (
                             <Icon size={20} color={foreground} />
                           )}
                         </View>
-                        <Text className="text-foreground mt-5 text-base leading-5 font-semibold">
+                        <Text className="text-foreground web:mt-5 web:ml-0 web:flex-none web:text-base web:leading-5 ml-3 flex-1 text-sm leading-4 font-semibold">
                           {reason.label}
                         </Text>
                       </GesturePressable>
@@ -187,29 +187,29 @@ export default function SendScreen() {
 
             {step === 2 ? (
               <View>
-                <View className="bg-lilac self-start rounded-full px-4 py-2">
+                <View className="bg-lilac self-start rounded-full px-3.5 py-1.5">
                   <Text className="text-foreground text-xs font-semibold">
                     {selectedReason?.label}
                   </Text>
                 </View>
-                <Text className="text-foreground web:text-5xl mt-5 text-4xl leading-tight font-bold">
+                <Text className="text-foreground web:text-5xl mt-4 text-3xl leading-tight font-bold">
                   Was soll {name.trim()} wissen?
                 </Text>
                 <Text className="text-muted mt-2 text-base leading-6">
                   Schreib einfach frei heraus. Stichpunkte reichen völlig.
                 </Text>
-                <TextField className="mt-7">
+                <TextField className="web:mt-7 mt-5">
                   <TextArea
                     value={details}
                     onChangeText={setDetails}
                     placeholder="Zum Beispiel: Danke, dass du immer zuhörst …"
                     autoFocus
                     maxLength={900}
-                    className="bg-background min-h-44 rounded-[28px] px-5 py-4 text-base leading-6"
+                    className="bg-background web:min-h-44 min-h-36 rounded-[24px] px-5 py-4 text-base leading-6"
                   />
                 </TextField>
                 <Text className="text-muted mt-2 text-right text-xs">{details.length}/900</Text>
-                <View className="bg-sun/55 mt-5 flex-row items-center rounded-[24px] p-4">
+                <View className="bg-sun/55 web:mt-5 mt-3 flex-row items-center rounded-[20px] p-3.5">
                   <WandSparkles size={20} color={foreground} />
                   <Text className="text-foreground ml-3 flex-1 text-sm leading-5">
                     Im nächsten Schritt kannst du deinen Text mit KI wärmer und persönlicher
@@ -221,18 +221,18 @@ export default function SendScreen() {
 
             {step === 3 ? (
               <View>
-                <Text className="text-foreground web:text-5xl text-4xl leading-tight font-bold">
+                <Text className="text-foreground web:text-5xl text-3xl leading-tight font-bold">
                   Bereit für {name.trim()}.
                 </Text>
                 <Text className="text-muted mt-2 text-base leading-6">
                   Passe die Nachricht an, bis sie sich wirklich nach dir anhört.
                 </Text>
-                <TextField className="mt-7">
+                <TextField className="web:mt-7 mt-5">
                   <TextArea
                     value={message}
                     onChangeText={setMessage}
                     maxLength={1500}
-                    className="bg-background min-h-56 rounded-[28px] px-5 py-4 text-base leading-6"
+                    className="bg-background web:min-h-56 min-h-40 rounded-[24px] px-5 py-4 text-base leading-6"
                   />
                 </TextField>
                 <Button
@@ -253,7 +253,7 @@ export default function SendScreen() {
                 {feedback ? (
                   <Text className="text-muted mt-3 text-sm leading-5">{feedback}</Text>
                 ) : null}
-                <View className="mt-7 gap-3">
+                <View className="web:mt-7 mt-5 gap-3">
                   <Button
                     variant="primary"
                     onPress={() =>
@@ -289,7 +289,7 @@ export default function SendScreen() {
             ) : null}
 
             {step < 3 ? (
-              <View className="mt-8 flex-row gap-3">
+              <View className="web:mt-8 mt-5 flex-row gap-3">
                 {step > 1 ? (
                   <Button
                     variant="secondary"
@@ -321,7 +321,7 @@ export default function SendScreen() {
               </Button>
             )}
           </View>
-          <Text className="text-muted mt-5 text-center text-sm leading-5">
+          <Text className="text-muted web:mt-5 mt-3 text-center text-xs leading-4">
             Kleine Worte. Große Wirkung.
           </Text>
         </View>
@@ -343,8 +343,8 @@ function PastelBackdrop() {
 function StepHeader({ step }: { step: number }) {
   const titles = ['Für wen?', 'Was möchtest du sagen?', 'Deine Nachricht'];
   return (
-    <View className="border-border/70 bg-card/80 flex-row items-center rounded-full border p-2.5">
-      <View className="bg-foreground size-11 items-center justify-center rounded-full">
+    <View className="border-border/70 bg-card/80 flex-row items-center rounded-full border p-2">
+      <View className="bg-foreground web:size-11 size-10 items-center justify-center rounded-full">
         <Text className="text-background text-base font-semibold">{step}</Text>
       </View>
       <Text className="text-foreground ml-3 flex-1 text-base font-semibold">
