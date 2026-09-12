@@ -132,15 +132,15 @@ export default function SendScreen() {
         contentContainerClassName="px-4 pb-safe-or-2 pt-safe-or-2 flex-grow"
         showsVerticalScrollIndicator={false}
       >
-        <View className="web:py-8 mx-auto w-full max-w-2xl flex-1 py-1">
+        <View className="web:pt-5 web:pb-8 mx-auto w-full max-w-2xl flex-1 pb-1">
           <Text
-            className={`text-muted text-center text-[11px] font-semibold tracking-[3px] ${isCompact ? 'mb-1' : 'mb-3'}`}
+            className={`text-muted text-center text-[11px] font-semibold tracking-[3px] ${isCompact ? 'mb-0' : 'mb-2'}`}
           >
             TO MAKE SOMEONE SMILE
           </Text>
           <StepHeader step={step} compact={isCompact} />
           <View
-            className={`bg-card/90 web:mt-5 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isCompact ? 'mt-2 p-4' : 'mt-3 p-5'}`}
+            className={`bg-card/90 web:mt-4 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isCompact ? 'mt-1 p-4' : 'mt-2 p-5'}`}
           >
             {step === 1 ? (
               <View>
