@@ -166,16 +166,16 @@ export default function SendScreen() {
                         accessibilityRole="button"
                         accessibilityState={{ selected }}
                         onPress={() => setReasonId(reason.id)}
-                        className={`web:min-h-36 web:flex-col web:items-stretch web:justify-between web:p-4 min-h-20 w-[47%] flex-grow flex-row items-center rounded-[24px] border p-3 ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
+                        className={`web:min-h-28 web:flex-col web:items-stretch web:justify-between web:p-3 min-h-16 w-[47%] flex-grow flex-row items-center rounded-[20px] border p-2.5 ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
                       >
-                        <View className="web:size-10 size-9 shrink-0 items-center justify-center rounded-full bg-white/65">
+                        <View className="web:size-9 size-8 shrink-0 items-center justify-center rounded-full bg-white/65">
                           {selected ? (
-                            <Check size={20} color={foreground} />
+                            <Check size={18} color={foreground} />
                           ) : (
-                            <Icon size={20} color={foreground} />
+                            <Icon size={18} color={foreground} />
                           )}
                         </View>
-                        <Text className="text-foreground web:mt-5 web:ml-0 web:flex-none web:text-base web:leading-5 ml-3 flex-1 text-sm leading-4 font-semibold">
+                        <Text className="text-foreground web:mt-3 web:ml-0 web:flex-none web:text-sm web:leading-5 ml-2.5 flex-1 text-sm leading-4 font-semibold">
                           {reason.label}
                         </Text>
                       </GesturePressable>
