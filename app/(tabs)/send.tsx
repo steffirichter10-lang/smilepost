@@ -89,6 +89,8 @@ export default function SendScreen() {
   const { height } = useWindowDimensions();
   const isCompact = height < 820;
   const isDetailsCompact = step === 2 && height < 900;
+  const isResultCompact = step === 3 && height < 950;
+  const useCompactLayout = isCompact || isDetailsCompact || isResultCompact;
   const [foreground, accentForeground] = useThemeColor(['foreground', 'accent-foreground']);
   const selectedReason = useMemo(
     () => REASONS.find((reason) => reason.id === reasonId),
@@ -179,13 +181,13 @@ export default function SendScreen() {
       >
         <View className="web:pt-5 web:pb-8 mx-auto w-full max-w-2xl flex-1 pb-1">
           <Text
-            className={`text-muted text-center text-[11px] font-semibold tracking-[3px] ${isCompact || isDetailsCompact ? 'mb-0' : 'mb-2'}`}
+            className={`text-muted text-center text-[11px] font-semibold tracking-[3px] ${useCompactLayout ? 'mb-0' : 'mb-2'}`}
           >
             TO MAKE SOMEONE SMILE
           </Text>
-          <StepHeader step={step} compact={isCompact || isDetailsCompact} />
+          <StepHeader step={step} compact={useCompactLayout} />
           <View
-            className={`bg-card/90 web:mt-4 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isCompact || isDetailsCompact ? 'mt-1 p-4' : 'mt-2 p-5'}`}
+            className={`bg-card/90 web:mt-4 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${useCompactLayout ? 'mt-1 p-4' : 'mt-2 p-5'}`}
           >
             {step === 1 ? (
               <View>
@@ -283,51 +285,63 @@ export default function SendScreen() {
 
             {step === 3 ? (
               <View>
-                <Text className="text-foreground web:text-5xl text-3xl leading-tight font-bold">
+                <Text
+                  className={`text-foreground web:text-5xl leading-tight font-bold ${isResultCompact ? 'text-[27px]' : 'text-3xl'}`}
+                >
                   Bereit für {name.trim()}.
                 </Text>
-                <Text className="text-muted mt-2 text-base leading-6">
+                <Text
+                  className={`text-muted text-base ${isResultCompact ? 'mt-0.5 text-sm leading-5' : 'mt-2 leading-6'}`}
+                >
                   Passe die Nachricht an, bis sie sich wirklich nach dir anhört.
                 </Text>
-                <TextField className="web:mt-7 mt-5">
+                <TextField className={isResultCompact ? 'mt-2.5' : 'web:mt-7 mt-5'}>
                   <TextArea
                     value={message}
                     onChangeText={setMessage}
                     maxLength={1500}
-                    className="bg-background web:min-h-56 min-h-40 rounded-[24px] px-5 py-4 text-base leading-6"
+                    className={`bg-background web:min-h-56 rounded-[24px] px-5 text-base leading-6 ${isResultCompact ? 'h-28 py-3' : 'min-h-40 py-4'}`}
                   />
                 </TextField>
                 <Button
                   variant="secondary"
                   onPress={improveMessage}
                   isDisabled={isImproving}
-                  className="bg-lilac mt-4 h-13 rounded-full"
+                  className={`bg-lilac rounded-full ${isResultCompact ? 'mt-2 h-11' : 'mt-4 h-13'}`}
                 >
                   {isImproving ? (
                     <Spinner color={foreground} />
                   ) : (
                     <>
-                      <WandSparkles size={19} color={foreground} />
+                      <WandSparkles size={isResultCompact ? 17 : 19} color={foreground} />
                       <Button.Label className="font-semibold">Mit KI verbessern</Button.Label>
                     </>
                   )}
                 </Button>
                 {feedback ? (
-                  <Text className="text-muted mt-3 text-sm leading-5">{feedback}</Text>
+                  <Text
+                    className={`text-muted text-sm leading-5 ${isResultCompact ? 'mt-1.5' : 'mt-3'}`}
+                  >
+                    {feedback}
+                  </Text>
                 ) : null}
-                <View className="bg-sun/55 mt-4 flex-row items-center rounded-[20px] p-3.5">
-                  <Sparkles size={20} color={foreground} />
-                  <Text className="text-foreground ml-3 flex-1 text-sm leading-5">
+                <View
+                  className={`bg-sun/55 flex-row items-center rounded-[20px] ${isResultCompact ? 'mt-2 p-2.5' : 'mt-4 p-3.5'}`}
+                >
+                  <Sparkles size={isResultCompact ? 17 : 20} color={foreground} />
+                  <Text
+                    className={`text-foreground ml-2.5 flex-1 ${isResultCompact ? 'text-xs leading-4' : 'text-sm leading-5'}`}
+                  >
                     Beim Senden erhält deine Nachricht einen persönlichen Link. So siehst du auf der
                     Impact Map, wie dein Smile weitergegeben wird.
                   </Text>
                 </View>
-                <View className="web:mt-7 mt-5 gap-3">
+                <View className={`web:mt-7 ${isResultCompact ? 'mt-2 gap-2' : 'mt-5 gap-3'}`}>
                   <Button
                     variant="primary"
                     onPress={shareOnWhatsApp}
                     isDisabled={isPreparingShare}
-                    className="h-14 rounded-full"
+                    className={`${isResultCompact ? 'h-12' : 'h-14'} rounded-full`}
                   >
                     {isPreparingShare ? (
                       <Spinner color={accentForeground} />
@@ -336,23 +350,23 @@ export default function SendScreen() {
                     )}
                     <Button.Label className="font-semibold">Über WhatsApp senden</Button.Label>
                   </Button>
-                  <View className="flex-row gap-3">
+                  <View className={isResultCompact ? 'flex-row gap-2' : 'flex-row gap-3'}>
                     <Button
                       variant="secondary"
                       onPress={shareMessage}
                       isDisabled={isPreparingShare}
-                      className="h-13 flex-1 rounded-full"
+                      className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
                     >
-                      <Share2 size={19} color={foreground} />
+                      <Share2 size={isResultCompact ? 17 : 19} color={foreground} />
                       <Button.Label>Teilen</Button.Label>
                     </Button>
                     <Button
                       variant="secondary"
                       onPress={copyMessage}
                       isDisabled={isPreparingShare}
-                      className="h-13 flex-1 rounded-full"
+                      className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
                     >
-                      <Copy size={19} color={foreground} />
+                      <Copy size={isResultCompact ? 17 : 19} color={foreground} />
                       <Button.Label>Kopieren</Button.Label>
                     </Button>
                   </View>
@@ -362,15 +376,13 @@ export default function SendScreen() {
 
             {step < 3 ? (
               <>
-                <View
-                  className={`web:mt-8 flex-row gap-3 ${isCompact || isDetailsCompact ? 'mt-2.5' : 'mt-5'}`}
-                >
+                <View className={`web:mt-8 flex-row gap-3 ${useCompactLayout ? 'mt-2.5' : 'mt-5'}`}>
                   {step > 1 ? (
                     <Button
                       variant="secondary"
                       isIconOnly
                       onPress={() => setStep(1)}
-                      className={`${isCompact || isDetailsCompact ? 'size-12' : 'size-14'} rounded-full`}
+                      className={`${useCompactLayout ? 'size-12' : 'size-14'} rounded-full`}
                     >
                       <ArrowLeft size={21} color={foreground} />
                     </Button>
@@ -379,7 +391,7 @@ export default function SendScreen() {
                     variant="primary"
                     isDisabled={!canContinue}
                     onPress={goForward}
-                    className={`${isCompact || isDetailsCompact ? 'h-12' : 'h-14'} flex-1 rounded-full`}
+                    className={`${useCompactLayout ? 'h-12' : 'h-14'} flex-1 rounded-full`}
                   >
                     <Button.Label className="font-semibold">Weiter</Button.Label>
                     <ArrowRight size={20} color={accentForeground} />
@@ -401,14 +413,14 @@ export default function SendScreen() {
               <Button
                 variant="ghost"
                 onPress={() => setStep(2)}
-                className="mt-7 self-start rounded-full"
+                className={`${isResultCompact ? 'mt-1.5 h-9' : 'mt-7'} self-start rounded-full`}
               >
-                <ArrowLeft size={18} color={foreground} />
+                <ArrowLeft size={isResultCompact ? 16 : 18} color={foreground} />
                 <Button.Label>Text ändern</Button.Label>
               </Button>
             )}
           </View>
-          {!isCompact && !isDetailsCompact ? (
+          {!useCompactLayout ? (
             <Text className="text-muted web:mt-5 mt-3 text-center text-xs leading-4">
               Kleine Worte. Große Wirkung.
             </Text>
