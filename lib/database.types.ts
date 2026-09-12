@@ -6,9 +6,101 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 declare module '@biltme/backend' {
   interface Database {
     public: {
-      Tables: { [_ in never]: never };
+      Tables: {
+        smile_nodes: {
+          Row: {
+            id: string;
+            chain_id: string | null;
+            parent_node_id: string | null;
+            share_token: string;
+            tracker_token: string | null;
+            generation: number;
+            created_at: string;
+            confirmed_at: string | null;
+            approximate_latitude: number | null;
+            approximate_longitude: number | null;
+          };
+          Insert: {
+            id?: string;
+            chain_id?: string | null;
+            parent_node_id?: string | null;
+            share_token?: string;
+            tracker_token?: string | null;
+            generation?: number;
+            created_at?: string;
+            confirmed_at?: string | null;
+            approximate_latitude?: number | null;
+            approximate_longitude?: number | null;
+          };
+          Update: {
+            id?: string;
+            chain_id?: string | null;
+            parent_node_id?: string | null;
+            share_token?: string;
+            tracker_token?: string | null;
+            generation?: number;
+            created_at?: string;
+            confirmed_at?: string | null;
+            approximate_latitude?: number | null;
+            approximate_longitude?: number | null;
+          };
+          Relationships: [
+            {
+              foreignKeyName: 'smile_nodes_chain_id_fkey';
+              columns: ['chain_id'];
+              isOneToOne: false;
+              referencedRelation: 'smile_nodes';
+              referencedColumns: ['id'];
+            },
+            {
+              foreignKeyName: 'smile_nodes_parent_node_id_fkey';
+              columns: ['parent_node_id'];
+              isOneToOne: false;
+              referencedRelation: 'smile_nodes';
+              referencedColumns: ['id'];
+            },
+          ];
+        };
+      };
       Views: { [_ in never]: never };
-      Functions: { [_ in never]: never };
+      Functions: {
+        confirm_smile_received: {
+          Args: {
+            token: string;
+          };
+          Returns: Json;
+        };
+        confirm_smile_received_with_location: {
+          Args: {
+            token: string;
+            latitude?: number;
+            longitude?: number;
+          };
+          Returns: Json;
+        };
+        create_smile_chain: {
+          Args: Record<PropertyKey, never>;
+          Returns: Json;
+        };
+        create_smile_forward: {
+          Args: {
+            token: string;
+          };
+          Returns: Json;
+        };
+        get_smile_chain_summary: {
+          Args: {
+            tracker_token: string;
+          };
+          Returns: Json;
+        };
+        resolve_smile_link: {
+          Args: {
+            token: string;
+          };
+          Returns: Json;
+        };
+      };
       Enums: { [_ in never]: never };
       CompositeTypes: { [_ in never]: never };
     };

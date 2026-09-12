@@ -45,6 +45,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-font',
       'expo-splash-screen',
       'expo-notifications',
+      [
+        'expo-location',
+        {
+          locationWhenInUsePermission:
+            'SmilePost verwendet deinen Standort nur freiwillig und grob, um den Weg deines Smiles auf der Impact Map zu zeigen.',
+        },
+      ],
       ...nativePlugins,
     ],
     experiments: {

@@ -1,87 +1,215 @@
-import { useState } from 'react';
-import { MapPin, Sparkles } from 'lucide-react-native';
-import { Text, View } from 'react-native';
-import { useThemeColor } from 'heroui-native';
+import { useFocusEffect } from 'expo-router';
+import { Button, Spinner, useThemeColor } from 'heroui-native';
+import { GitFork, Globe2, Heart, RefreshCw, Sparkles } from 'lucide-react-native';
+import { useCallback, useMemo, useState } from 'react';
+import { Text, useWindowDimensions, View } from 'react-native';
 
-import MapView, { type MapMarker } from '@/components/MapView';
-
-const SMILE_PLACES: MapMarker[] = [
-  {
-    id: 'garten',
-    coordinate: { latitude: 48.1402, longitude: 11.5721 },
-    title: 'Englischer Garten',
-    description: 'Ein Spaziergang, der den Kopf frei macht.',
-    color: 'orange',
-  },
-  {
-    id: 'isar',
-    coordinate: { latitude: 48.1278, longitude: 11.5782 },
-    title: 'Isarwiesen',
-    description: 'Sonne, Wasser und gute Gespräche.',
-    color: 'purple',
-  },
-  {
-    id: 'markt',
-    coordinate: { latitude: 48.1351, longitude: 11.5763 },
-    title: 'Viktualienmarkt',
-    description: 'Ein Lieblingsplatz für kleine Genussmomente.',
-    color: 'yellow',
-  },
-  {
-    id: 'museum',
-    coordinate: { latitude: 48.1301, longitude: 11.5835 },
-    title: 'Deutsches Museum',
-    description: 'Neugier macht Freude.',
-    color: 'cyan',
-  },
-];
+import MapView, { type MapMarker, type MapPolyline } from '@/components/MapView';
+import { loadSmileSummaries, type SmileChainSummary } from '@/lib/smileChains';
 
 export default function SmileMapScreen() {
-  const [selectedPlace, setSelectedPlace] = useState<MapMarker>(SMILE_PLACES[0]);
-  const [foreground] = useThemeColor(['foreground']);
+  const [summaries, setSummaries] = useState<SmileChainSummary[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [foreground, accent, muted] = useThemeColor(['foreground', 'accent', 'muted']);
+  const { height } = useWindowDimensions();
+  const isCompact = height < 760;
+
+  const refresh = useCallback(async () => {
+    setIsLoading(true);
+    setErrorMessage('');
+    try {
+      setSummaries(await loadSmileSummaries());
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Dein Smile-Impact konnte nicht geladen werden.',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      void refresh();
+    }, [refresh]),
+  );
+
+  const { markers, polylines, confirmedSmiles, generations } = useMemo(() => {
+    const nextMarkers: MapMarker[] = [];
+    const nextPolylines: MapPolyline[] = [];
+
+    for (const [chainIndex, summary] of summaries.entries()) {
+      const locations = new Map(
+        summary.nodes
+          .filter((node) => node.latitude !== null && node.longitude !== null)
+          .map((node) => [node.id, { latitude: node.latitude!, longitude: node.longitude! }]),
+      );
+
+      for (const node of summary.nodes) {
+        const coordinate = locations.get(node.id);
+        if (!coordinate) continue;
+        nextMarkers.push({
+          id: node.id,
+          coordinate,
+          title: node.generation === 1 ? 'Hier kam dein Smile an' : `Smile ${node.generation}`,
+          description: `Station ${node.generation} dieser Smile-Kette`,
+          color: chainIndex % 2 === 0 ? 'orange' : 'purple',
+        });
+        const parentCoordinate = node.parentId ? locations.get(node.parentId) : undefined;
+        if (parentCoordinate) {
+          nextPolylines.push({
+            id: `${node.parentId}-${node.id}`,
+            coordinates: [parentCoordinate, coordinate],
+            strokeColor: chainIndex % 2 === 0 ? accent : foreground,
+            strokeWidth: 3,
+            lineDashPattern: [8, 6],
+          });
+        }
+      }
+    }
+
+    return {
+      markers: nextMarkers,
+      polylines: nextPolylines,
+      confirmedSmiles: summaries.reduce((total, summary) => total + summary.confirmedSmiles, 0),
+      generations: summaries.reduce(
+        (highest, summary) => Math.max(highest, summary.generations),
+        0,
+      ),
+    };
+  }, [accent, foreground, summaries]);
 
   return (
     <View className="bg-cream flex-1">
-      <View className="p-safe-or-5 flex-1">
-        <View className="mx-auto w-full max-w-4xl flex-1 py-4">
-          <View className="mb-5 flex-row items-start justify-between">
-            <View className="flex-1 pr-4">
-              <Text className="text-muted text-xs font-semibold tracking-[2.5px]">SMILE MAP</Text>
-              <Text className="text-foreground mt-2 text-4xl font-bold">Smile-Orte</Text>
-              <Text className="text-muted mt-2 text-sm leading-5">
-                Orte in München, die Raum für schöne Momente schaffen.
+      <PastelBackdrop />
+      <View className="p-safe-or-4 mx-auto w-full max-w-5xl flex-1">
+        <View className={isCompact ? 'mb-3 flex-row items-start' : 'mb-5 flex-row items-start'}>
+          <View className="flex-1 pr-3">
+            <Text className="text-muted text-xs font-semibold tracking-[2.5px]">
+              DEIN SMILE IMPACT
+            </Text>
+            <Text
+              className={`text-foreground mt-1 font-bold ${isCompact ? 'text-3xl' : 'text-4xl'}`}
+            >
+              Ein Smile wirkt weiter.
+            </Text>
+            {!isCompact ? (
+              <Text className="text-muted mt-2 max-w-2xl text-sm leading-5">
+                Jede bestätigte Weitergabe lässt deine persönliche Smile-Kette wachsen.
+              </Text>
+            ) : null}
+          </View>
+          <Button
+            variant="secondary"
+            isIconOnly
+            onPress={refresh}
+            isDisabled={isLoading}
+            className="size-11 rounded-full"
+          >
+            {isLoading ? (
+              <Spinner color={foreground} />
+            ) : (
+              <RefreshCw color={foreground} size={19} />
+            )}
+          </Button>
+        </View>
+
+        <View className="mb-3 flex-row gap-2.5">
+          <ImpactCard
+            icon={Heart}
+            value={confirmedSmiles}
+            label="Smiles ausgelöst"
+            colorClass="bg-blush"
+          />
+          <ImpactCard
+            icon={GitFork}
+            value={generations}
+            label="Weitergabe-Stufen"
+            colorClass="bg-lilac"
+          />
+          <ImpactCard
+            icon={Globe2}
+            value={markers.length}
+            label="Auf der Weltkarte"
+            colorClass="bg-sun"
+          />
+        </View>
+
+        <View className="bg-card relative flex-1 overflow-hidden rounded-[32px] border border-white/90 p-2 shadow-sm">
+          <MapView
+            initialRegion={{
+              latitude: 20,
+              longitude: 0,
+              latitudeDelta: 140,
+              longitudeDelta: 280,
+            }}
+            markers={markers}
+            polylines={polylines}
+            minZoomLevel={1}
+            style={{ flex: 1, minHeight: 300, borderRadius: 25 }}
+          />
+
+          {!isLoading && confirmedSmiles === 0 ? (
+            <View className="bg-card/95 absolute right-5 bottom-5 left-5 items-center rounded-[26px] border border-white/90 p-5 shadow-sm">
+              <View className="bg-sun size-11 items-center justify-center rounded-full">
+                <Sparkles color={foreground} size={20} />
+              </View>
+              <Text className="text-foreground mt-3 text-center text-lg font-bold">
+                Dein erster Impact wartet.
+              </Text>
+              <Text className="text-muted mt-1 text-center text-sm leading-5">
+                Sende einen Smile. Sobald er bestätigt wird, beginnt hier seine echte Reise.
               </Text>
             </View>
-            <View className="bg-sun size-12 items-center justify-center rounded-full">
-              <Sparkles color={foreground} size={21} />
-            </View>
-          </View>
-
-          <View className="bg-card flex-1 overflow-hidden rounded-[34px] border border-white/90 p-2 shadow-sm">
-            <MapView
-              initialRegion={{
-                latitude: 48.1351,
-                longitude: 11.582,
-                latitudeDelta: 0.035,
-                longitudeDelta: 0.035,
-              }}
-              markers={SMILE_PLACES}
-              onMarkerPress={setSelectedPlace}
-              style={{ flex: 1, minHeight: 360, borderRadius: 27 }}
-            />
-          </View>
-
-          <View className="bg-card mt-4 flex-row items-center rounded-[26px] border border-white/90 p-4 shadow-sm">
-            <View className="bg-blush size-12 items-center justify-center rounded-full">
-              <MapPin color={foreground} size={21} />
-            </View>
-            <View className="ml-3 flex-1">
-              <Text className="text-foreground text-base font-bold">{selectedPlace.title}</Text>
-              <Text className="text-muted mt-1 text-sm leading-5">{selectedPlace.description}</Text>
-            </View>
-          </View>
+          ) : null}
         </View>
+
+        {errorMessage ? (
+          <Text className="text-danger mt-3 text-center text-sm">{errorMessage}</Text>
+        ) : markers.length < confirmedSmiles && confirmedSmiles > 0 ? (
+          <Text className="mt-3 text-center text-xs leading-4" style={{ color: muted }}>
+            {confirmedSmiles - markers.length} bestätigte Smiles werden ohne Standort mitgezählt.
+          </Text>
+        ) : (
+          <Text className="text-muted mt-3 text-center text-xs leading-4">
+            Die Karte zeigt nur freiwillig geteilte, grobe Bereiche.
+          </Text>
+        )}
       </View>
+    </View>
+  );
+}
+
+function ImpactCard({
+  icon: Icon,
+  value,
+  label,
+  colorClass,
+}: {
+  icon: typeof Heart;
+  value: number;
+  label: string;
+  colorClass: string;
+}) {
+  const [foreground] = useThemeColor(['foreground']);
+  return (
+    <View className="bg-card min-w-0 flex-1 rounded-[22px] border border-white/90 p-3 shadow-sm">
+      <View className={`${colorClass} size-8 items-center justify-center rounded-full`}>
+        <Icon color={foreground} size={16} />
+      </View>
+      <Text className="text-foreground mt-2 text-2xl font-bold">{value}</Text>
+      <Text className="text-muted mt-0.5 text-[11px] leading-4">{label}</Text>
+    </View>
+  );
+}
+
+function PastelBackdrop() {
+  return (
+    <View pointerEvents="none" className="absolute inset-0 overflow-hidden">
+      <View className="bg-blush/35 absolute -top-28 -left-24 size-80 rounded-full" />
+      <View className="bg-sun/25 absolute top-64 -right-24 size-72 rounded-full" />
+      <View className="bg-lilac/30 absolute -bottom-36 -left-20 size-96 rounded-full" />
     </View>
   );
 }

@@ -1,4 +1,5 @@
 import * as Clipboard from 'expo-clipboard';
+import { useLocalSearchParams } from 'expo-router';
 import { Button, Input, Spinner, TextArea, TextField, useThemeColor } from 'heroui-native';
 import {
   ArrowLeft,
@@ -25,6 +26,7 @@ import {
 } from 'react-native';
 
 import { GesturePressable } from '@/components/ui/primitives/GesturePressable';
+import { buildSmileUrl, createChainLink } from '@/lib/smileChains';
 import { bilt } from '@/lib/bilt';
 
 type Reason = {
@@ -36,6 +38,10 @@ type Reason = {
 };
 
 type ImproveResponse = { message?: string };
+type ActiveChainLink = { shareToken: string; trackerToken: string };
+
+const SMILE_FOOTER =
+  'Wenn dich das zum Lächeln gebracht hat, schenk bitte auch jemandem einen Smile und lass ihn weiterwandern:';
 
 const REASONS: Reason[] = [
   {
@@ -69,12 +75,16 @@ const REASONS: Reason[] = [
 ];
 
 export default function SendScreen() {
+  const params = useLocalSearchParams<{ parentToken?: string }>();
+  const parentToken = typeof params.parentToken === 'string' ? params.parentToken : undefined;
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [reasonId, setReasonId] = useState('');
   const [details, setDetails] = useState('');
   const [message, setMessage] = useState('');
   const [isImproving, setIsImproving] = useState(false);
+  const [isPreparingShare, setIsPreparingShare] = useState(false);
+  const [activeChainLink, setActiveChainLink] = useState<ActiveChainLink | null>(null);
   const [feedback, setFeedback] = useState('');
   const { height } = useWindowDimensions();
   const isCompact = height < 820;
@@ -116,9 +126,43 @@ export default function SendScreen() {
     setFeedback('Deine Nachricht wurde verfeinert.');
   };
 
+  const prepareSharedMessage = async () => {
+    setIsPreparingShare(true);
+    setFeedback('');
+    try {
+      const chainLink = activeChainLink ?? (await createChainLink(parentToken));
+      setActiveChainLink(chainLink);
+      const smileUrl = buildSmileUrl(chainLink.shareToken);
+      return `${message.trim()}\n\n${SMILE_FOOTER}\n${smileUrl}`;
+    } catch (error) {
+      setFeedback(
+        error instanceof Error
+          ? error.message
+          : 'Der persönliche Smile-Link konnte nicht erstellt werden.',
+      );
+      return null;
+    } finally {
+      setIsPreparingShare(false);
+    }
+  };
+
+  const shareOnWhatsApp = async () => {
+    const sharedMessage = await prepareSharedMessage();
+    if (!sharedMessage) return;
+    await Linking.openURL(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`);
+  };
+
+  const shareMessage = async () => {
+    const sharedMessage = await prepareSharedMessage();
+    if (!sharedMessage) return;
+    await Share.share({ message: sharedMessage, title: `Eine Nachricht für ${name.trim()}` });
+  };
+
   const copyMessage = async () => {
-    await Clipboard.setStringAsync(message);
-    setFeedback('Nachricht kopiert.');
+    const sharedMessage = await prepareSharedMessage();
+    if (!sharedMessage) return;
+    await Clipboard.setStringAsync(sharedMessage);
+    setFeedback('Nachricht mit persönlichem Smile-Link kopiert.');
   };
 
   return (
@@ -270,23 +314,32 @@ export default function SendScreen() {
                 {feedback ? (
                   <Text className="text-muted mt-3 text-sm leading-5">{feedback}</Text>
                 ) : null}
+                <View className="bg-sun/55 mt-4 flex-row items-center rounded-[20px] p-3.5">
+                  <Sparkles size={20} color={foreground} />
+                  <Text className="text-foreground ml-3 flex-1 text-sm leading-5">
+                    Beim Senden erhält deine Nachricht einen persönlichen Link. So siehst du auf der
+                    Impact Map, wie dein Smile weitergegeben wird.
+                  </Text>
+                </View>
                 <View className="web:mt-7 mt-5 gap-3">
                   <Button
                     variant="primary"
-                    onPress={() =>
-                      Linking.openURL(`https://wa.me/?text=${encodeURIComponent(message)}`)
-                    }
+                    onPress={shareOnWhatsApp}
+                    isDisabled={isPreparingShare}
                     className="h-14 rounded-full"
                   >
-                    <MessageCircleHeart size={20} color={accentForeground} />
+                    {isPreparingShare ? (
+                      <Spinner color={accentForeground} />
+                    ) : (
+                      <MessageCircleHeart size={20} color={accentForeground} />
+                    )}
                     <Button.Label className="font-semibold">Über WhatsApp senden</Button.Label>
                   </Button>
                   <View className="flex-row gap-3">
                     <Button
                       variant="secondary"
-                      onPress={() =>
-                        Share.share({ message, title: `Eine Nachricht für ${name.trim()}` })
-                      }
+                      onPress={shareMessage}
+                      isDisabled={isPreparingShare}
                       className="h-13 flex-1 rounded-full"
                     >
                       <Share2 size={19} color={foreground} />
@@ -295,6 +348,7 @@ export default function SendScreen() {
                     <Button
                       variant="secondary"
                       onPress={copyMessage}
+                      isDisabled={isPreparingShare}
                       className="h-13 flex-1 rounded-full"
                     >
                       <Copy size={19} color={foreground} />

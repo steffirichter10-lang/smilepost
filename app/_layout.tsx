@@ -152,6 +152,10 @@ export default function RootLayout() {
             name="(tabs)"
             options={{ title: 'To make someone smile', headerShown: false }}
           />
+          <Stack.Screen
+            name="smile"
+            options={{ title: 'Dein Smile', headerShown: false, presentation: 'modal' }}
+          />
         </Stack>
         <InstallPrompt />
       </HeroUINativeProvider>
