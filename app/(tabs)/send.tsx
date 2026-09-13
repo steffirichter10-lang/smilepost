@@ -10,7 +10,6 @@ import {
   Gift,
   Heart,
   MessageCircleHeart,
-  Share2,
   Smile,
   Sparkles,
   Star,
@@ -21,7 +20,6 @@ import {
   Linking,
   Platform,
   ScrollView,
-  Share,
   Text,
   useWindowDimensions,
   View,
@@ -140,12 +138,6 @@ export default function SendScreen() {
     const sharedMessage = await prepareSharedMessage();
     if (!sharedMessage) return;
     await Linking.openURL(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`);
-  };
-
-  const shareMessage = async () => {
-    const sharedMessage = await prepareSharedMessage();
-    if (!sharedMessage) return;
-    await Share.share({ message: sharedMessage, title: `A message for ${name.trim()}` });
   };
 
   const copyMessage = async () => {
@@ -345,26 +337,15 @@ export default function SendScreen() {
                   )}
                   <Button.Label className="font-semibold">Send via WhatsApp</Button.Label>
                 </Button>
-                <View className={isResultCompact ? 'flex-row gap-2' : 'flex-row gap-3'}>
-                  <Button
-                    variant="secondary"
-                    onPress={shareMessage}
-                    isDisabled={isPreparingShare}
-                    className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
-                  >
-                    <Share2 size={isResultCompact ? 17 : 19} color={foreground} />
-                    <Button.Label>Share</Button.Label>
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    onPress={copyMessage}
-                    isDisabled={isPreparingShare}
-                    className={`${isResultCompact ? 'h-11' : 'h-13'} flex-1 rounded-full`}
-                  >
-                    <Copy size={isResultCompact ? 17 : 19} color={foreground} />
-                    <Button.Label>Copy</Button.Label>
-                  </Button>
-                </View>
+                <Button
+                  variant="secondary"
+                  onPress={copyMessage}
+                  isDisabled={isPreparingShare}
+                  className={`${isResultCompact ? 'h-11' : 'h-13'} rounded-full`}
+                >
+                  <Copy size={isResultCompact ? 17 : 19} color={foreground} />
+                  <Button.Label>Copy</Button.Label>
+                </Button>
                 <View
                   className={`bg-sun/55 flex-row items-center rounded-[20px] ${isResultCompact ? 'p-2.5' : 'p-3.5'}`}
                 >
