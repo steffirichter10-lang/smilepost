@@ -4,14 +4,14 @@ import { Button, Input, Spinner, TextArea, TextField, useThemeColor } from 'hero
 import {
   ArrowLeft,
   ArrowRight,
+  Award,
   Check,
   Copy,
   Gift,
   Heart,
-  HeartPulse,
   MessageCircleHeart,
-  PartyPopper,
   Share2,
+  Smile,
   Sparkles,
   Star,
 } from 'lucide-react-native';
@@ -67,16 +67,16 @@ const REASONS: Reason[] = [
     icon: Star,
   },
   {
-    id: 'congratulations',
-    label: 'Congratulations',
+    id: 'proud',
+    label: 'Proud of you',
     className: 'bg-lilac',
-    icon: PartyPopper,
+    icon: Award,
   },
   {
-    id: 'get-well',
-    label: 'Get well soon',
+    id: 'cheer-up',
+    label: 'Cheer up',
     className: 'bg-blush',
-    icon: HeartPulse,
+    icon: Smile,
   },
 ];
 
