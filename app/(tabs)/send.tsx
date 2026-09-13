@@ -148,16 +148,24 @@ export default function SendScreen() {
       const isAvailable = await SMS.isAvailableAsync();
       if (!isAvailable) {
         setFeedback(
-          'Text messaging is not available on this device. You can copy the message instead.',
+          'Text messaging is not available on this device. You can copy the Smile instead.',
         );
         return;
       }
 
       const sharedMessage = await prepareSharedMessage();
       if (!sharedMessage) return;
-      await SMS.sendSMSAsync([], sharedMessage);
+
+      const { result } = await SMS.sendSMSAsync([], sharedMessage);
+      if (result === 'sent') {
+        setFeedback('Your Smile was sent as a text message.');
+      } else if (result === 'cancelled') {
+        setFeedback('The text message wasn’t sent. You can try again or copy the Smile.');
+      } else {
+        setFeedback('Your messaging app opened with the Smile ready to send.');
+      }
     } catch {
-      setFeedback('We couldn’t open your text messaging app. You can copy the message instead.');
+      setFeedback('We couldn’t open your messaging app. Please try again or copy the Smile.');
     }
   };
 
