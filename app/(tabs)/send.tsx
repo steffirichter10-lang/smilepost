@@ -149,42 +149,42 @@ export default function SendScreen() {
       >
         <View className="web:pt-5 web:pb-8 mx-auto w-full max-w-2xl flex-1 pb-1">
           <Text
-            className={`text-muted text-center text-[11px] font-semibold tracking-[3px] ${useCompactLayout ? 'mb-0' : 'mb-2'}`}
+            className={`text-muted web:flex web:mb-0 text-center text-[11px] font-semibold tracking-[3px] ${useCompactLayout ? 'hidden' : 'mb-2'}`}
           >
             TO MAKE SOMEONE SMILE
           </Text>
           <StepHeader step={step} compact={useCompactLayout} />
           <View
-            className={`bg-card/90 web:mt-4 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${useCompactLayout ? 'mt-1 p-4' : 'mt-2 p-5'}`}
+            className={`bg-card/90 web:mt-4 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${useCompactLayout ? 'mt-1 p-3.5' : 'mt-2 p-5'}`}
           >
             {step === 1 ? (
               <View>
                 <Text
-                  className={`text-foreground web:text-5xl leading-tight font-bold ${isCompact ? 'text-[28px]' : 'text-3xl'}`}
+                  className={`text-foreground web:text-5xl leading-tight font-bold ${isCompact ? 'text-[26px]' : 'text-3xl'}`}
                 >
                   Who is it for?
                 </Text>
                 <Text
-                  className={`text-muted text-base ${isCompact ? 'mt-1 leading-5' : 'mt-2 leading-6'}`}
+                  className={`text-muted ${isCompact ? 'mt-0.5 text-sm leading-5' : 'mt-2 text-base leading-6'}`}
                 >
                   Who would you like to make smile today?
                 </Text>
-                <TextField className={isCompact ? 'mt-3' : 'web:mt-7 mt-5'}>
+                <TextField className={isCompact ? 'mt-2' : 'web:mt-7 mt-5'}>
                   <Input
                     value={name}
                     onChangeText={setName}
                     placeholder="Name, e.g. Mia"
                     autoCapitalize="words"
                     returnKeyType="done"
-                    className={`bg-background rounded-full px-5 text-base ${isCompact ? 'h-12' : 'h-14'}`}
+                    className={`bg-background rounded-full px-5 text-base ${isCompact ? 'h-11' : 'h-14'}`}
                   />
                 </TextField>
                 <Text
-                  className={`text-foreground text-sm font-semibold ${isCompact ? 'mt-3 mb-2' : 'web:mt-7 mt-5 mb-3'}`}
+                  className={`text-foreground text-sm font-semibold ${isCompact ? 'mt-2 mb-1.5' : 'web:mt-7 mt-5 mb-3'}`}
                 >
                   What’s the occasion?
                 </Text>
-                <View className={`flex-row flex-wrap ${isCompact ? 'gap-2' : 'gap-3'}`}>
+                <View className={`flex-row flex-wrap ${isCompact ? 'gap-1.5' : 'gap-3'}`}>
                   {REASONS.map((reason) => {
                     const Icon = reason.icon;
                     const selected = reason.id === reasonId;
@@ -194,7 +194,7 @@ export default function SendScreen() {
                         accessibilityRole="button"
                         accessibilityState={{ selected }}
                         onPress={() => setReasonId(reason.id)}
-                        className={`web:min-h-28 web:flex-col web:items-stretch web:justify-between web:p-3 w-[47%] flex-grow flex-row items-center rounded-[20px] border ${isCompact ? 'min-h-14 p-2' : 'min-h-16 p-2.5'} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
+                        className={`web:min-h-28 web:flex-col web:items-stretch web:justify-between web:p-3 w-[47%] flex-grow flex-row items-center rounded-[20px] border ${isCompact ? 'min-h-12 p-1.5' : 'min-h-16 p-2.5'} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
                       >
                         <View
                           className={`web:size-9 shrink-0 items-center justify-center rounded-full bg-white/65 ${isCompact ? 'size-7' : 'size-8'}`}
