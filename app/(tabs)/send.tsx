@@ -77,7 +77,7 @@ export default function SendScreen() {
   const [activeChainLink, setActiveChainLink] = useState<ActiveChainLink | null>(null);
   const [feedback, setFeedback] = useState('');
   const { height } = useWindowDimensions();
-  const isCompact = height < 820;
+  const isCompact = height < 900;
   const isDetailsCompact = step === 2 && height < 900;
   const isResultCompact = step === 3 && height < 950;
   const useCompactLayout = isCompact || isDetailsCompact || isResultCompact;
