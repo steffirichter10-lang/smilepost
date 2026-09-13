@@ -36,7 +36,7 @@ export default function HomeScreen() {
       <PastelBackdrop />
       <View
         className="p-safe-or-5 mx-auto w-full max-w-3xl flex-1"
-        style={{ transform: [{ translateY: 4 }] }}
+        style={{ transform: [{ translateY: 14 }] }}
       >
         <View
           className={
