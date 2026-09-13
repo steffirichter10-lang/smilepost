@@ -194,7 +194,7 @@ export default function SendScreen() {
                         accessibilityRole="button"
                         accessibilityState={{ selected }}
                         onPress={() => setReasonId(reason.id)}
-                        className={`web:min-h-28 web:flex-col web:items-stretch web:justify-between web:p-3 w-[47%] flex-grow flex-row items-center rounded-[20px] border ${isCompact ? 'min-h-12 p-1.5' : 'min-h-16 p-2.5'} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
+                        className={`web:min-h-28 web:flex-col web:items-stretch web:justify-between web:p-3 w-[47%] flex-grow flex-row items-center rounded-[20px] border ${isCompact ? 'min-h-11 p-1.5' : 'min-h-16 p-2.5'} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
                       >
                         <View
                           className={`web:size-9 shrink-0 items-center justify-center rounded-full bg-white/65 ${isCompact ? 'size-7' : 'size-8'}`}
