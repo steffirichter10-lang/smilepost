@@ -6,7 +6,7 @@ import { ArrowRight, Sparkles } from 'lucide-react-native';
 import { ActivityIndicator, Image, Text, useWindowDimensions, View } from 'react-native';
 
 const HERO_VIDEO_URL =
-  'https://res.cloudinary.com/hnb8c0nk/video/upload/ac_none,c_limit,w_1280,q_auto:eco,vc_h264/v1789256936/make-someone-smile-spot.mp4';
+  'https://res.cloudinary.com/hnb8c0nk/video/upload/v1789294373/make-someone-smile-video-reel.webm';
 const HERO_POSTER_URL =
   'https://res.cloudinary.com/hnb8c0nk/video/upload/so_1,c_limit,w_1280,q_auto:eco/v1789256936/make-someone-smile-spot.jpg';
 
