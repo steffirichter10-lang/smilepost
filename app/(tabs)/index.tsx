@@ -34,10 +34,7 @@ export default function HomeScreen() {
   return (
     <View className="bg-cream flex-1">
       <PastelBackdrop />
-      <View
-        className="p-safe-or-5 mx-auto w-full max-w-3xl flex-1"
-        style={{ transform: [{ translateY: 14 }] }}
-      >
+      <View className="p-safe-or-5 mx-auto w-full max-w-3xl flex-1">
         <View
           className={
             isCompact
