@@ -156,13 +156,19 @@ export default function SendScreen() {
       const sharedMessage = await prepareSharedMessage();
       if (!sharedMessage) return;
 
+      if (Platform.OS === 'ios') {
+        await Linking.openURL(`sms:&body=${encodeURIComponent(sharedMessage)}`);
+        setFeedback('Your complete Smile message was added to a new text message.');
+        return;
+      }
+
       const { result } = await SMS.sendSMSAsync([], sharedMessage);
       if (result === 'sent') {
         setFeedback('Your Smile was sent as a text message.');
       } else if (result === 'cancelled') {
         setFeedback('The text message wasn’t sent. You can try again or copy the Smile.');
       } else {
-        setFeedback('Your messaging app opened with the Smile ready to send.');
+        setFeedback('Your complete Smile message was added to the messaging app.');
       }
     } catch {
       setFeedback('We couldn’t open your messaging app. Please try again or copy the Smile.');
@@ -170,10 +176,21 @@ export default function SendScreen() {
   };
 
   const copyMessage = async () => {
-    const sharedMessage = await prepareSharedMessage();
-    if (!sharedMessage) return;
-    await Clipboard.setStringAsync(sharedMessage);
-    setFeedback('Message copied with your personal Smile link.');
+    try {
+      const sharedMessage = await prepareSharedMessage();
+      if (!sharedMessage) return;
+
+      const copied = await Clipboard.setStringAsync(sharedMessage, {
+        inputFormat: Clipboard.StringFormat.PLAIN_TEXT,
+      });
+      if (!copied) {
+        throw new Error('The message could not be copied.');
+      }
+
+      setFeedback('Your complete Smile message was copied. You can paste it now.');
+    } catch {
+      setFeedback('Copy did not work. Please try again.');
+    }
   };
 
   return (
