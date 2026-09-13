@@ -188,7 +188,7 @@ export default function SendScreen() {
                 >
                   What’s the occasion?
                 </Text>
-                <View className={`flex-row flex-wrap ${isShortFirstStep ? 'gap-1.5' : 'gap-3'}`}>
+                <View className={`flex-col ${isShortFirstStep ? 'gap-1.5' : 'gap-2'}`}>
                   {REASONS.map((reason) => {
                     const Icon = reason.icon;
                     const selected = reason.id === reasonId;
@@ -198,7 +198,7 @@ export default function SendScreen() {
                         accessibilityRole="button"
                         accessibilityState={{ selected }}
                         onPress={() => setReasonId(reason.id)}
-                        className={`w-[47%] flex-grow rounded-[20px] border ${isWideWeb ? 'min-h-28 flex-col items-stretch justify-between p-3' : `flex-row items-center ${isShortFirstStep ? 'min-h-11 p-1.5' : 'min-h-16 p-2.5'}`} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
+                        className={`w-full flex-row items-center rounded-[20px] border ${isWideWeb ? 'min-h-16 p-3' : isShortFirstStep ? 'min-h-10 px-2 py-1.5' : 'min-h-13 p-2.5'} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
                       >
                         <View
                           className={`${isWideWeb ? 'size-9' : isShortFirstStep ? 'size-7' : 'size-8'} shrink-0 items-center justify-center rounded-full bg-white/65`}
@@ -209,9 +209,7 @@ export default function SendScreen() {
                             <Icon size={18} color={foreground} />
                           )}
                         </View>
-                        <Text
-                          className={`text-foreground text-sm font-semibold ${isWideWeb ? 'mt-3 ml-0 flex-none leading-5' : 'ml-2.5 flex-1 leading-4'}`}
-                        >
+                        <Text className="text-foreground ml-2.5 flex-1 text-sm leading-4 font-semibold">
                           {reason.label}
                         </Text>
                       </GesturePressable>
