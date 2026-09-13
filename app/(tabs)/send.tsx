@@ -1,4 +1,5 @@
 import * as Clipboard from 'expo-clipboard';
+import * as SMS from 'expo-sms';
 import { useLocalSearchParams } from 'expo-router';
 import { Button, Input, Spinner, TextArea, TextField, useThemeColor } from 'heroui-native';
 import {
@@ -10,6 +11,7 @@ import {
   Gift,
   Heart,
   MessageCircleHeart,
+  MessageSquareText,
   Smile,
   Sparkles,
   Star,
@@ -138,6 +140,25 @@ export default function SendScreen() {
     const sharedMessage = await prepareSharedMessage();
     if (!sharedMessage) return;
     await Linking.openURL(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`);
+  };
+
+  const sendAsTextMessage = async () => {
+    setFeedback('');
+    try {
+      const isAvailable = await SMS.isAvailableAsync();
+      if (!isAvailable) {
+        setFeedback(
+          'Text messaging is not available on this device. You can copy the message instead.',
+        );
+        return;
+      }
+
+      const sharedMessage = await prepareSharedMessage();
+      if (!sharedMessage) return;
+      await SMS.sendSMSAsync([], sharedMessage);
+    } catch {
+      setFeedback('We couldn’t open your text messaging app. You can copy the message instead.');
+    }
   };
 
   const copyMessage = async () => {
@@ -336,6 +357,15 @@ export default function SendScreen() {
                     <MessageCircleHeart size={20} color={accentForeground} />
                   )}
                   <Button.Label className="font-semibold">Send via WhatsApp</Button.Label>
+                </Button>
+                <Button
+                  variant="secondary"
+                  onPress={sendAsTextMessage}
+                  isDisabled={isPreparingShare}
+                  className={`${isResultCompact ? 'h-11' : 'h-13'} rounded-full`}
+                >
+                  <MessageSquareText size={isResultCompact ? 17 : 19} color={foreground} />
+                  <Button.Label>Send as text message</Button.Label>
                 </Button>
                 <Button
                   variant="secondary"
