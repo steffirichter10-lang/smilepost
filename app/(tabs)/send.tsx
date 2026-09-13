@@ -76,8 +76,10 @@ export default function SendScreen() {
   const [isPreparingShare, setIsPreparingShare] = useState(false);
   const [activeChainLink, setActiveChainLink] = useState<ActiveChainLink | null>(null);
   const [feedback, setFeedback] = useState('');
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
+  const isWideWeb = Platform.OS === 'web' && width >= 768;
   const isCompact = height < 900;
+  const isShortFirstStep = step === 1 && height < 760;
   const isDetailsCompact = step === 2 && height < 900;
   const isResultCompact = step === 3 && height < 950;
   const useCompactLayout = isCompact || isDetailsCompact || isResultCompact;
@@ -147,29 +149,35 @@ export default function SendScreen() {
         contentContainerClassName="px-4 pb-safe-or-2 pt-safe-or-2 flex-grow"
         showsVerticalScrollIndicator={false}
       >
-        <View className="web:pt-5 web:pb-8 mx-auto w-full max-w-2xl flex-1 pb-1">
+        <View className={`mx-auto w-full max-w-2xl flex-1 ${isWideWeb ? 'pt-5 pb-8' : 'pb-1'}`}>
           <Text
-            className={`text-muted web:flex web:mb-0 text-center text-[11px] font-semibold tracking-[3px] ${useCompactLayout ? 'hidden' : 'mb-2'}`}
+            className={`text-muted text-center text-[11px] font-semibold tracking-[3px] ${useCompactLayout ? 'hidden' : 'mb-2'}`}
           >
             TO MAKE SOMEONE SMILE
           </Text>
-          <StepHeader step={step} compact={useCompactLayout} />
+          <StepHeader step={step} compact={useCompactLayout} short={isShortFirstStep} />
           <View
-            className={`bg-card/90 web:mt-4 web:p-9 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${useCompactLayout ? 'mt-1 p-3.5' : 'mt-2 p-5'}`}
+            className={`bg-card/90 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isWideWeb ? 'mt-4 p-9' : isShortFirstStep ? 'mt-0.5 p-2.5' : useCompactLayout ? 'mt-1 p-3.5' : 'mt-2 p-5'}`}
           >
             {step === 1 ? (
               <View>
                 <Text
-                  className={`text-foreground web:text-5xl leading-tight font-bold ${isCompact ? 'text-[26px]' : 'text-3xl'}`}
+                  className={`text-foreground leading-tight font-bold ${isWideWeb ? 'text-5xl' : isShortFirstStep ? 'text-2xl' : isCompact ? 'text-[26px]' : 'text-3xl'}`}
                 >
                   Who is it for?
                 </Text>
-                <Text
-                  className={`text-muted ${isCompact ? 'mt-0.5 text-sm leading-5' : 'mt-2 text-base leading-6'}`}
+                {isShortFirstStep ? null : (
+                  <Text
+                    className={`text-muted ${isCompact ? 'mt-0.5 text-sm leading-5' : 'mt-2 text-base leading-6'}`}
+                  >
+                    Who would you like to make smile today?
+                  </Text>
+                )}
+                <TextField
+                  className={
+                    isWideWeb ? 'mt-7' : isShortFirstStep ? 'mt-1' : isCompact ? 'mt-2' : 'mt-5'
+                  }
                 >
-                  Who would you like to make smile today?
-                </Text>
-                <TextField className={isCompact ? 'mt-2' : 'web:mt-7 mt-5'}>
                   <Input
                     value={name}
                     onChangeText={setName}
@@ -180,7 +188,7 @@ export default function SendScreen() {
                   />
                 </TextField>
                 <Text
-                  className={`text-foreground text-sm font-semibold ${isCompact ? 'mt-2 mb-1.5' : 'web:mt-7 mt-5 mb-3'}`}
+                  className={`text-foreground text-sm font-semibold ${isWideWeb ? 'mt-7 mb-3' : isShortFirstStep ? 'mt-1.5 mb-1' : isCompact ? 'mt-2 mb-1.5' : 'mt-5 mb-3'}`}
                 >
                   What’s the occasion?
                 </Text>
@@ -194,10 +202,10 @@ export default function SendScreen() {
                         accessibilityRole="button"
                         accessibilityState={{ selected }}
                         onPress={() => setReasonId(reason.id)}
-                        className={`web:min-h-28 web:flex-col web:items-stretch web:justify-between web:p-3 w-[47%] flex-grow flex-row items-center rounded-[20px] border ${isCompact ? 'min-h-11 p-1.5' : 'min-h-16 p-2.5'} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
+                        className={`w-[47%] flex-grow rounded-[20px] border ${isWideWeb ? 'min-h-28 flex-col items-stretch justify-between p-3' : `flex-row items-center ${isCompact ? 'min-h-11 p-1.5' : 'min-h-16 p-2.5'}`} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
                       >
                         <View
-                          className={`web:size-9 shrink-0 items-center justify-center rounded-full bg-white/65 ${isCompact ? 'size-7' : 'size-8'}`}
+                          className={`${isWideWeb ? 'size-9' : isCompact ? 'size-7' : 'size-8'} shrink-0 items-center justify-center rounded-full bg-white/65`}
                         >
                           {selected ? (
                             <Check size={18} color={foreground} />
@@ -205,7 +213,9 @@ export default function SendScreen() {
                             <Icon size={18} color={foreground} />
                           )}
                         </View>
-                        <Text className="text-foreground web:mt-3 web:ml-0 web:flex-none web:text-sm web:leading-5 ml-2.5 flex-1 text-sm leading-4 font-semibold">
+                        <Text
+                          className={`text-foreground text-sm font-semibold ${isWideWeb ? 'mt-3 ml-0 flex-none leading-5' : 'ml-2.5 flex-1 leading-4'}`}
+                        >
                           {reason.label}
                         </Text>
                       </GesturePressable>
@@ -276,7 +286,9 @@ export default function SendScreen() {
 
             {step < 3 ? (
               <>
-                <View className={`web:mt-8 flex-row gap-3 ${useCompactLayout ? 'mt-2.5' : 'mt-5'}`}>
+                <View
+                  className={`flex-row gap-3 ${isWideWeb ? 'mt-8' : isShortFirstStep ? 'mt-1.5' : useCompactLayout ? 'mt-2.5' : 'mt-5'}`}
+                >
                   {step > 1 ? (
                     <Button
                       variant="secondary"
@@ -380,16 +392,18 @@ function PastelBackdrop() {
   );
 }
 
-function StepHeader({ step, compact }: { step: number; compact: boolean }) {
+function StepHeader({ step, compact, short }: { step: number; compact: boolean; short: boolean }) {
   const titles = ['Who is it for?', 'What would you like to say?', 'Your message'];
   return (
     <View
-      className={`border-border/70 bg-card/80 flex-row items-center rounded-full border ${compact ? 'p-1' : 'p-2'}`}
+      className={`border-border/70 bg-card/80 flex-row items-center rounded-full border ${short ? 'p-0.5' : compact ? 'p-1' : 'p-2'}`}
     >
       <View
-        className={`bg-foreground web:size-11 items-center justify-center rounded-full ${compact ? 'size-8' : 'size-10'}`}
+        className={`bg-foreground items-center justify-center rounded-full ${short ? 'size-7' : compact ? 'size-8' : 'size-10'}`}
       >
-        <Text className={`text-background font-semibold ${compact ? 'text-sm' : 'text-base'}`}>
+        <Text
+          className={`text-background font-semibold ${short ? 'text-xs' : compact ? 'text-sm' : 'text-base'}`}
+        >
           {step}
         </Text>
       </View>
