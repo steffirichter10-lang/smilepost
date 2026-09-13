@@ -157,7 +157,7 @@ export default function SendScreen() {
           </Text>
           <StepHeader step={step} compact={useCompactLayout} short={isShortFirstStep} />
           <View
-            className={`bg-card/90 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isWideWeb ? 'mt-4 p-9' : isShortFirstStep ? 'mt-0.5 p-2.5' : useCompactLayout ? 'mt-1 p-3.5' : 'mt-2 p-5'}`}
+            className={`bg-card/90 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isWideWeb ? 'mt-4 p-9' : isShortFirstStep ? 'mt-1 p-3' : useCompactLayout ? 'mt-1 p-3.5' : 'mt-2 p-5'}`}
           >
             {step === 1 ? (
               <View>
@@ -175,7 +175,7 @@ export default function SendScreen() {
                 )}
                 <TextField
                   className={
-                    isWideWeb ? 'mt-7' : isShortFirstStep ? 'mt-1' : isCompact ? 'mt-2' : 'mt-5'
+                    isWideWeb ? 'mt-7' : isShortFirstStep ? 'mt-1.5' : isCompact ? 'mt-2' : 'mt-5'
                   }
                 >
                   <Input
@@ -188,7 +188,7 @@ export default function SendScreen() {
                   />
                 </TextField>
                 <Text
-                  className={`text-foreground text-sm font-semibold ${isWideWeb ? 'mt-7 mb-3' : isShortFirstStep ? 'mt-1.5 mb-1' : isCompact ? 'mt-2 mb-1.5' : 'mt-5 mb-3'}`}
+                  className={`text-foreground text-sm font-semibold ${isWideWeb ? 'mt-7 mb-3' : isShortFirstStep ? 'mt-2 mb-1.5' : isCompact ? 'mt-2 mb-1.5' : 'mt-5 mb-3'}`}
                 >
                   What’s the occasion?
                 </Text>
@@ -287,7 +287,7 @@ export default function SendScreen() {
             {step < 3 ? (
               <>
                 <View
-                  className={`flex-row gap-3 ${isWideWeb ? 'mt-8' : isShortFirstStep ? 'mt-1.5' : useCompactLayout ? 'mt-2.5' : 'mt-5'}`}
+                  className={`flex-row gap-3 ${isWideWeb ? 'mt-8' : isShortFirstStep ? 'mt-2' : useCompactLayout ? 'mt-2.5' : 'mt-5'}`}
                 >
                   {step > 1 ? (
                     <Button
