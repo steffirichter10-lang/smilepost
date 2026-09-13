@@ -111,7 +111,7 @@ export default function SendScreen() {
   const goForward = () => {
     setFeedback('');
     if (step === 2) {
-      setMessage(`Hey ${name.trim()},\n\n${details.trim()}\n\nI just wanted you to know.`);
+      setMessage(`Hey ${name.trim()},\n${details.trim()}\nI just wanted you to know.`);
       setStep(3);
       return;
     }
