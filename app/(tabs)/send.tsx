@@ -6,8 +6,11 @@ import {
   ArrowRight,
   Check,
   Copy,
+  Gift,
   Heart,
+  HeartPulse,
   MessageCircleHeart,
+  PartyPopper,
   Share2,
   Sparkles,
   Star,
@@ -40,28 +43,40 @@ const SMILE_FOOTER = 'If this made you smile, please send someone a Smile too an
 
 const REASONS: Reason[] = [
   {
-    id: 'thinking',
-    label: 'Thinking of you',
+    id: 'just-because',
+    label: 'Just because',
     className: 'bg-lilac',
-    icon: Sparkles,
+    icon: Gift,
   },
   {
     id: 'thanks',
-    label: 'Say thank you',
+    label: 'Thank you',
     className: 'bg-blush',
     icon: MessageCircleHeart,
   },
   {
-    id: 'impact',
-    label: 'You inspire me',
+    id: 'thinking',
+    label: 'Thinking of you',
     className: 'bg-sand',
-    icon: Heart,
+    icon: Sparkles,
   },
   {
-    id: 'proud',
-    label: "I'm proud of you",
+    id: 'encouragement',
+    label: 'You’ve got this',
     className: 'bg-sun',
     icon: Star,
+  },
+  {
+    id: 'congratulations',
+    label: 'Congratulations',
+    className: 'bg-lilac',
+    icon: PartyPopper,
+  },
+  {
+    id: 'get-well',
+    label: 'Get well soon',
+    className: 'bg-blush',
+    icon: HeartPulse,
   },
 ];
 
@@ -70,7 +85,7 @@ export default function SendScreen() {
   const parentToken = typeof params.parentToken === 'string' ? params.parentToken : undefined;
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
-  const [reasonId, setReasonId] = useState('');
+  const [reasonId, setReasonId] = useState('just-because');
   const [details, setDetails] = useState('');
   const [message, setMessage] = useState('');
   const [isPreparingShare, setIsPreparingShare] = useState(false);
