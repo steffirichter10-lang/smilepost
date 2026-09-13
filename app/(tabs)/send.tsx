@@ -80,9 +80,11 @@ export default function SendScreen() {
   const isWideWeb = Platform.OS === 'web' && width >= 768;
   const isCompact = height < 900;
   const isShortFirstStep = step === 1 && height < 760;
+  const isSpaciousFirstStep = step === 1 && !isShortFirstStep && !isWideWeb;
   const isDetailsCompact = step === 2 && height < 900;
   const isResultCompact = step === 3 && height < 950;
-  const useCompactLayout = isCompact || isDetailsCompact || isResultCompact;
+  const useCompactLayout =
+    step === 1 ? isShortFirstStep : isCompact || isDetailsCompact || isResultCompact;
   const [foreground, accentForeground] = useThemeColor(['foreground', 'accent-foreground']);
   const selectedReason = useMemo(
     () => REASONS.find((reason) => reason.id === reasonId),
@@ -157,42 +159,36 @@ export default function SendScreen() {
           </Text>
           <StepHeader step={step} compact={useCompactLayout} short={isShortFirstStep} />
           <View
-            className={`bg-card/90 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isWideWeb ? 'mt-4 p-9' : isShortFirstStep ? 'mt-1 p-3' : useCompactLayout ? 'mt-1 p-3.5' : 'mt-2 p-5'}`}
+            className={`bg-card/90 overflow-hidden rounded-[32px] border border-white/80 shadow-sm ${isSpaciousFirstStep ? 'flex-1' : ''} ${isWideWeb ? 'mt-4 p-9' : isShortFirstStep ? 'mt-1 p-3' : useCompactLayout ? 'mt-1 p-3.5' : 'mt-3 p-5'}`}
           >
             {step === 1 ? (
-              <View>
+              <View className={isSpaciousFirstStep ? 'flex-1 justify-center py-2' : ''}>
                 <Text
-                  className={`text-foreground leading-tight font-bold ${isWideWeb ? 'text-5xl' : isShortFirstStep ? 'text-2xl' : isCompact ? 'text-[26px]' : 'text-3xl'}`}
+                  className={`text-foreground leading-tight font-bold ${isWideWeb ? 'text-5xl' : isShortFirstStep ? 'text-2xl' : 'text-3xl'}`}
                 >
                   Who is it for?
                 </Text>
                 {isShortFirstStep ? null : (
-                  <Text
-                    className={`text-muted ${isCompact ? 'mt-0.5 text-sm leading-5' : 'mt-2 text-base leading-6'}`}
-                  >
+                  <Text className="text-muted mt-2 text-base leading-6">
                     Who would you like to make smile today?
                   </Text>
                 )}
-                <TextField
-                  className={
-                    isWideWeb ? 'mt-7' : isShortFirstStep ? 'mt-1.5' : isCompact ? 'mt-2' : 'mt-5'
-                  }
-                >
+                <TextField className={isWideWeb ? 'mt-7' : isShortFirstStep ? 'mt-1.5' : 'mt-5'}>
                   <Input
                     value={name}
                     onChangeText={setName}
                     placeholder="Name, e.g. Mia"
                     autoCapitalize="words"
                     returnKeyType="done"
-                    className={`bg-background rounded-full px-5 text-base ${isCompact ? 'h-11' : 'h-14'}`}
+                    className={`bg-background rounded-full px-5 text-base ${isShortFirstStep ? 'h-11' : 'h-14'}`}
                   />
                 </TextField>
                 <Text
-                  className={`text-foreground text-sm font-semibold ${isWideWeb ? 'mt-7 mb-3' : isShortFirstStep ? 'mt-2 mb-1.5' : isCompact ? 'mt-2 mb-1.5' : 'mt-5 mb-3'}`}
+                  className={`text-foreground text-sm font-semibold ${isWideWeb ? 'mt-7 mb-3' : isShortFirstStep ? 'mt-2 mb-1.5' : 'mt-5 mb-3'}`}
                 >
                   What’s the occasion?
                 </Text>
-                <View className={`flex-row flex-wrap ${isCompact ? 'gap-1.5' : 'gap-3'}`}>
+                <View className={`flex-row flex-wrap ${isShortFirstStep ? 'gap-1.5' : 'gap-3'}`}>
                   {REASONS.map((reason) => {
                     const Icon = reason.icon;
                     const selected = reason.id === reasonId;
@@ -202,10 +198,10 @@ export default function SendScreen() {
                         accessibilityRole="button"
                         accessibilityState={{ selected }}
                         onPress={() => setReasonId(reason.id)}
-                        className={`w-[47%] flex-grow rounded-[20px] border ${isWideWeb ? 'min-h-28 flex-col items-stretch justify-between p-3' : `flex-row items-center ${isCompact ? 'min-h-11 p-1.5' : 'min-h-16 p-2.5'}`} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
+                        className={`w-[47%] flex-grow rounded-[20px] border ${isWideWeb ? 'min-h-28 flex-col items-stretch justify-between p-3' : `flex-row items-center ${isShortFirstStep ? 'min-h-11 p-1.5' : 'min-h-16 p-2.5'}`} ${reason.className} ${selected ? 'border-foreground' : 'border-white/60'}`}
                       >
                         <View
-                          className={`${isWideWeb ? 'size-9' : isCompact ? 'size-7' : 'size-8'} shrink-0 items-center justify-center rounded-full bg-white/65`}
+                          className={`${isWideWeb ? 'size-9' : isShortFirstStep ? 'size-7' : 'size-8'} shrink-0 items-center justify-center rounded-full bg-white/65`}
                         >
                           {selected ? (
                             <Check size={18} color={foreground} />
