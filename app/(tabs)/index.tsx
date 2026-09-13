@@ -3,10 +3,12 @@ import { router } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { Button, useThemeColor } from 'heroui-native';
 import { ArrowRight, Sparkles } from 'lucide-react-native';
-import { ActivityIndicator, Image, Text, useWindowDimensions, View } from 'react-native';
+import { ActivityIndicator, Image, Platform, Text, useWindowDimensions, View } from 'react-native';
 
 const HERO_VIDEO_URL =
-  'https://res.cloudinary.com/hnb8c0nk/video/upload/v1789294373/make-someone-smile-video-reel.webm';
+  Platform.OS === 'ios'
+    ? 'https://res.cloudinary.com/hnb8c0nk/video/upload/f_mp4/v1789294373/make-someone-smile-video-reel.mp4'
+    : 'https://res.cloudinary.com/hnb8c0nk/video/upload/v1789294373/make-someone-smile-video-reel.webm';
 const HERO_POSTER_URL =
   'https://res.cloudinary.com/hnb8c0nk/video/upload/so_1,c_limit,w_1280,q_auto:eco/v1789256936/make-someone-smile-spot.jpg';
 
