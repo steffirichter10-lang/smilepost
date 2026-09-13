@@ -390,7 +390,9 @@ export default function SendScreen() {
                   className={`${isResultCompact ? 'h-11' : 'h-13'} rounded-full`}
                 >
                   <MessageSquareText size={isResultCompact ? 17 : 19} color={foreground} />
-                  <Button.Label>Send as text message</Button.Label>
+                  <Button.Label className="text-foreground font-semibold">
+                    Send as text message
+                  </Button.Label>
                 </Button>
                 <Button
                   variant="secondary"
@@ -399,7 +401,7 @@ export default function SendScreen() {
                   className={`${isResultCompact ? 'h-11' : 'h-13'} rounded-full`}
                 >
                   <Copy size={isResultCompact ? 17 : 19} color={foreground} />
-                  <Button.Label>Copy</Button.Label>
+                  <Button.Label className="text-foreground font-semibold">Copy</Button.Label>
                 </Button>
                 <View
                   className={`bg-sun/55 flex-row items-center rounded-[20px] ${isResultCompact ? 'p-2.5' : 'p-3.5'}`}
